@@ -1,0 +1,45 @@
+/* Дизайн-токены сайта-портфолио — единственный источник.
+   Описание и правила: docs/design/system.md.
+   T-002 переносит этот файл в src/styles/tokens.css; после этого источник — там. */
+:root{
+  /* Цвета (одна тема — тёмная) */
+  --bg:#0a0a0c;             /* фон страницы */
+  --surface:#131317;        /* карточки, кейс, контакт */
+  --surface-2:#1b1b21;      /* заглушки картинок, иконки */
+  --line:#26262e;           /* рамки, разделители */
+  --line-strong:#3a3a45;    /* рамка при наведении */
+  --text:#f3f1ec;           /* основной текст — 17.6:1 к фону */
+  --text-2:#a4a3ad;         /* вторичный текст — 7.9:1 к фону */
+  --accent:#ff8a3d;         /* акцент, метки ИИ — 8.4:1 к фону */
+  --accent-hover:#ff9d5c;
+  --accent-pressed:#e9742a;
+  --accent-ink:#160b03;     /* текст на акценте — 8.3:1 */
+  --success:#5fd19b;        /* «Live», готово */
+  --warning:#f2c14e;
+  --error:#ff5d5d;          /* 6.6:1 к фону */
+
+  /* Шрифты */
+  --font-display:"Space Grotesk",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,sans-serif;
+  --fs-h1:clamp(40px,5.6vw,84px);
+  --fs-h2:clamp(32px,4vw,56px);
+  --fs-h3:22px;
+  --fs-lead:clamp(17px,1.4vw,20px);
+  --fs-body:16px;
+  --fs-small:15px;
+  --fs-caption:13px;
+  --fs-chip:12px;
+
+  /* Отступы: шаг 4px */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-6:24px;
+  --s-8:32px; --s-10:40px; --s-14:56px; --s-18:72px;
+  --section:clamp(72px,9vw,128px);
+  --container:1360px;
+  --pad:clamp(16px,4vw,48px);
+
+  /* Скругления */
+  --r-sm:10px; --r:18px; --r-lg:24px; --r-xl:28px; --r-pill:999px;
+
+  /* Движение */
+  --ease:.15s ease;
+}

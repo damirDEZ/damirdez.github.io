@@ -1,0 +1,19 @@
+# Зависимости и сборка
+node_modules/
+dist/
+.astro/
+
+# Снимки экранов для приёмки — не храним в git
+shots/
+
+# Секреты и локальные настройки
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+
+# Системный мусор
+*.log
+Thumbs.db
+.DS_Store
+__pycache__/

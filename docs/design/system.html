@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design system — Damir portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:var(--fs-body)/1.6 var(--font-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;line-height:1.05}
+.wrap{max-width:var(--container);margin:0 auto;padding:48px var(--pad) 80px}
+.block{padding:40px 0;border-top:1px solid var(--line)}
+.block>h2{font-size:28px;margin-bottom:6px}
+.block>p.note{color:var(--text-2);font-size:var(--fs-small);margin-bottom:24px}
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.lbl{display:block;font-size:12px;color:var(--text-2);margin-top:8px;text-align:center}
+.eyebrow{font-size:var(--fs-caption);font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+
+/* swatches */
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw div{border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;font-size:12px}
+.sw i{display:block;height:64px}
+.sw span{display:block;padding:8px 10px;color:var(--text-2)}
+.sw b{display:block;color:var(--text);font-weight:500}
+
+/* type */
+.type>*{margin-bottom:14px}
+.t-h1{font-size:var(--fs-h1)}
+.t-h2{font-size:var(--fs-h2)}
+.t-h3{font-size:var(--fs-h3)}
+.t-lead{font-size:var(--fs-lead);color:var(--text-2)}
+.t-small{font-size:var(--fs-small);color:var(--text-2)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:var(--r-pill);font:600 15px var(--font-body);white-space:nowrap;border:0;cursor:pointer;color:inherit;transition:transform var(--ease),background var(--ease),border-color var(--ease)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover,.btn-primary.is-hover{background:var(--accent-hover)}
+.btn-primary:active,.btn-primary.is-pressed{background:var(--accent-pressed);transform:scale(.98)}
+.btn-ghost{border:1px solid var(--line);background:var(--surface)}
+.btn-ghost:hover,.btn-ghost.is-hover{border-color:var(--line-strong)}
+.btn-ghost:active,.btn-ghost.is-pressed{transform:scale(.98);background:var(--surface-2)}
+.btn.is-disabled,.btn:disabled{background:var(--surface-2);color:var(--text-2);border:1px solid var(--line);cursor:not-allowed;transform:none}
+.btn-sm{height:38px;padding:0 16px;font-size:14px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:var(--fs-chip);font-weight:500;padding:4px 10px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--text-2)}
+.chip.ai{border-color:rgba(255,138,61,.45);color:var(--accent)}
+.chip.on{background:var(--text);border-color:var(--text);color:var(--bg)}
+.chip.is-hover{border-color:var(--line-strong);color:var(--text)}
+
+/* frames */
+.frame{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:var(--surface-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.frame::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 40%,rgba(0,0,0,.55));pointer-events:none}
+.g1{background:linear-gradient(135deg,#1f1430 0%,#5b2a4a 45%,#d8743a 100%)}
+.g2{background:linear-gradient(160deg,#0d2230 0%,#1d5560 50%,#9ed0c4 100%)}
+.g5{background:linear-gradient(140deg,#0f1324 0%,#2a3b7a 55%,#8fa6ff 100%)}
+.play{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:rgba(10,10,12,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);z-index:1}
+.play::before{content:"";position:absolute;left:22px;top:17px;border-left:14px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent}
+.badge{position:absolute;z-index:1;font-size:12px;font-weight:600;padding:4px 9px;border-radius:6px;background:rgba(10,10,12,.7)}
+.badge.br{right:12px;bottom:12px}.badge.tl{left:12px;top:12px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--success);margin-right:6px;vertical-align:1px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card h3{font-size:var(--fs-h3);margin:16px 0 6px}
+.card p{color:var(--text-2);font-size:var(--fs-small);margin-bottom:12px}
+.card .kind{font-size:13px;color:var(--text-2);margin-top:16px}
+
+/* states */
+.skeleton{background:linear-gradient(100deg,var(--surface-2) 30%,#24242c 50%,var(--surface-2) 70%);background-size:300% 100%;animation:shimmer 1.4s infinite}
+@keyframes shimmer{from{background-position:100% 0}to{background-position:0 0}}
+.sk-line{height:14px;border-radius:6px;margin-top:12px}
+.err{display:grid;place-items:center;text-align:center;background:var(--surface)}
+.err div{position:relative;z-index:1}
+.err b{display:block;font-family:var(--font-display);font-size:18px;margin-bottom:4px}
+.err b::before{content:"!";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:rgba(255,93,93,.15);color:var(--error);font-size:13px;margin-right:8px;vertical-align:2px}
+.err a{color:var(--accent);font-size:14px}
+.empty{display:grid;place-items:center;border:1px dashed var(--line-strong);background:transparent;box-shadow:none}
+.empty span{position:relative;z-index:1;color:var(--text-2);font-size:14px}
+.empty::after{display:none}
+
+/* tool, devlog, nav */
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px}
+.tool .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:18px;background:var(--surface-2);border:1px solid var(--line);color:var(--accent)}
+.tool h3{font-size:var(--fs-h3);margin:20px 0 8px}
+.tool p{color:var(--text-2);font-size:var(--fs-small)}
+.devlog{list-style:none}
+.devlog li{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:var(--fs-small)}
+.devlog li span{color:var(--text-2)}
+.devlog li.next span{color:var(--accent)}
+.navbar{display:flex;align-items:center;justify-content:space-between;height:72px;padding:0 24px;border:1px solid var(--line);border-radius:var(--r);background:rgba(10,10,12,.78)}
+.logo{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.02em}
+.logo span{color:var(--accent)}
+.links{display:flex;gap:28px;font-size:15px;color:var(--text-2)}
+.links .cur{color:var(--text)}
+.menu{display:inline-block;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);position:relative}
+.menu::before,.menu::after{content:"";position:absolute;left:11px;right:11px;height:2px;background:var(--text);border-radius:2px}
+.menu::before{top:14px}.menu::after{top:21px}
+.thumb-title{position:absolute;left:14px;right:14px;bottom:12px;z-index:1;font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.05;text-transform:uppercase}
+
+/* spacing */
+.space{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.space i{display:block;background:var(--accent);opacity:.8;width:16px}
+.radii{display:flex;gap:18px;flex-wrap:wrap}
+.radii i{display:block;width:72px;height:72px;background:var(--surface);border:1px solid var(--line-strong)}
+
+@media (max-width:900px){.grid-3,.grid-4{grid-template-columns:1fr 1fr}.links{display:none}}
+@media (max-width:560px){.grid-3,.grid-4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Damir portfolio</div>
+  <h1 style="font-size:48px;margin:10px 0 8px">Design system</h1>
+  <p style="color:var(--text-2);margin-bottom:40px">All components in one place. Source: tokens.css · Rules: system.md</p>
+
+  <div class="block">
+    <h2>Colors</h2><p class="note">One dark theme. One accent — also marks AI work.</p>
+    <div class="sw">
+      <div><i style="background:var(--bg)"></i><span><b>bg</b>#0a0a0c</span></div>
+      <div><i style="background:var(--surface)"></i><span><b>surface</b>#131317</span></div>
+      <div><i style="background:var(--surface-2)"></i><span><b>surface-2</b>#1b1b21</span></div>
+      <div><i style="background:var(--line)"></i><span><b>line</b>#26262e</span></div>
+      <div><i style="background:var(--text)"></i><span><b>text</b>#f3f1ec · 17.6:1</span></div>
+      <div><i style="background:var(--text-2)"></i><span><b>text-2</b>#a4a3ad · 7.9:1</span></div>
+      <div><i style="background:var(--accent)"></i><span><b>accent</b>#ff8a3d · 8.4:1</span></div>
+      <div><i style="background:var(--success)"></i><span><b>success</b>#5fd19b</span></div>
+      <div><i style="background:var(--warning)"></i><span><b>warning</b>#f2c14e</span></div>
+      <div><i style="background:var(--error)"></i><span><b>error</b>#ff5d5d · 6.6:1</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Typography</h2><p class="note">Space Grotesk for headings, Inter for text.</p>
+    <div class="type">
+      <div class="eyebrow" style="color:var(--accent)">01 — Video · eyebrow 13px</div>
+      <div class="t-h1">Heading 1 — fast</div>
+      <div class="t-h2">Heading 2 — Editing &amp; AI films</div>
+      <div class="t-h3">Heading 3 — AI short film</div>
+      <p class="t-lead">Lead — Freelance video editor who makes AI short films and builds web apps with Claude Code.</p>
+      <p>Body 16 — Send me a reference and I’ll match the style.</p>
+      <p class="t-small">Small 15 — Designed and built the full site as a team.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Spacing &amp; radius</h2><p class="note">4px step. Radius 10 · 18 · 24 · 28 · pill. No shadows.</p>
+    <div class="space">
+      <div><i style="height:4px"></i><span class="lbl">4</span></div><div><i style="height:8px"></i><span class="lbl">8</span></div>
+      <div><i style="height:12px"></i><span class="lbl">12</span></div><div><i style="height:16px"></i><span class="lbl">16</span></div>
+      <div><i style="height:24px"></i><span class="lbl">24</span></div><div><i style="height:32px"></i><span class="lbl">32</span></div>
+      <div><i style="height:40px"></i><span class="lbl">40</span></div><div><i style="height:56px"></i><span class="lbl">56</span></div>
+      <div><i style="height:72px"></i><span class="lbl">72</span></div>
+    </div>
+    <div class="radii" style="margin-top:28px">
+      <div><i style="border-radius:var(--r-sm)"></i><span class="lbl">10</span></div>
+      <div><i style="border-radius:var(--r)"></i><span class="lbl">18</span></div>
+      <div><i style="border-radius:var(--r-lg)"></i><span class="lbl">24</span></div>
+      <div><i style="border-radius:var(--r-xl)"></i><span class="lbl">28</span></div>
+      <div><i style="border-radius:var(--r-pill);width:120px"></i><span class="lbl">pill</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Buttons</h2><p class="note">Default · hover · pressed · disabled. No danger button — the site has nothing to delete.</p>
+    <div class="row">
+      <div><a class="btn btn-primary">Hire me</a><span class="lbl">primary</span></div>
+      <div><a class="btn btn-primary is-hover">Hire me</a><span class="lbl">hover</span></div>
+      <div><a class="btn btn-primary is-pressed">Hire me</a><span class="lbl">pressed</span></div>
+      <div><a class="btn btn-primary is-disabled">Hire me</a><span class="lbl">disabled</span></div>
+      <div><a class="btn btn-primary btn-sm">View case</a><span class="lbl">small</span></div>
+    </div>
+    <div class="row" style="margin-top:20px">
+      <div><a class="btn btn-ghost">Email me</a><span class="lbl">secondary</span></div>
+      <div><a class="btn btn-ghost is-hover">Email me</a><span class="lbl">hover</span></div>
+      <div><a class="btn btn-ghost is-pressed">Email me</a><span class="lbl">pressed</span></div>
+      <div><a class="btn btn-ghost is-disabled">Email me</a><span class="lbl">disabled</span></div>
+      <div><a class="btn btn-ghost btn-sm">Live site ↗</a><span class="lbl">small</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Chips &amp; filters</h2><p class="note">Plain · AI · hover · active filter.</p>
+    <div class="chips">
+      <span class="chip">Edit</span><span class="chip">Team</span><span class="chip ai">Claude Code</span><span class="chip ai">Higgsfield</span>
+      <span class="chip is-hover">Hover</span><span class="chip on">All work</span><span class="chip">Video</span><span class="chip">Web</span>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Navigation</h2><p class="note">Sticky, translucent. Under 1020px the links fold into the menu button.</p>
+    <div class="navbar">
+      <span class="logo">DAMIR<span>.</span></span>
+      <span class="links"><span class="cur">Work</span><span>Video</span><span>Websites</span><span>Game dev</span><span>AI</span><span>Contact</span></span>
+      <span class="row" style="gap:10px"><a class="btn btn-primary btn-sm">Hire me</a><span class="menu"></span></span>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Cards &amp; frames</h2><p class="note">Work card · loading · error · empty.</p>
+    <div class="grid-4">
+      <div class="card">
+        <div class="frame g1"><span class="play"></span><span class="badge br">2:47</span></div>
+        <div class="kind">AI short film</div><h3>Mini film, made with AI</h3>
+        <div class="chips"><span class="chip ai">Higgsfield</span><span class="chip">Edit</span></div>
+      </div>
+      <div class="card">
+        <div class="frame skeleton"></div>
+        <div class="skeleton sk-line" style="width:40%"></div><div class="skeleton sk-line" style="width:75%;height:20px"></div>
+        <span class="lbl" style="text-align:left">loading</span>
+      </div>
+      <div class="card">
+        <div class="frame err"><div><b>Video unavailable</b><a>Watch on YouTube ↗</a></div></div>
+        <div class="kind">error</div><h3>Brand promo edit</h3>
+      </div>
+      <div class="card">
+        <div class="frame empty"><span>Coming soon</span></div>
+        <div class="kind">empty</div><h3>New project</h3>
+      </div>
+    </div>
+    <div class="grid-3" style="margin-top:28px">
+      <div class="frame g5"><span class="badge tl">In development</span></div>
+      <div class="frame g2"><span class="badge tl"><span class="dot"></span>Live</span></div>
+      <div class="frame g1"><span class="thumb-title">I made a film with AI</span></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h2>Tool card &amp; devlog</h2><p class="note">For the AI and Game dev sections.</p>
+    <div class="grid-3">
+      <div class="tool"><div class="ic">CC</div><h3>Claude Code</h3><p>Vibe-coding websites, apps and game logic.</p></div>
+      <ul class="devlog" style="grid-column:span 2">
+        <li><span>Done</span>Core gameplay prototype</li>
+        <li><span>In progress</span>Characters and art style</li>
+        <li class="next"><span>Next</span>Trailer and demo build</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>

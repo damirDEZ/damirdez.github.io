@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Damir — Video, Web &amp; Games with AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens (черновик дизайн-системы) ─────────────────────── */
+:root{
+  --bg:#0a0a0c;
+  --surface:#131317;
+  --surface-2:#1b1b21;
+  --line:#26262e;
+  --text:#f3f1ec;
+  --text-2:#a4a3ad;
+  --accent:#ff8a3d;
+  --accent-ink:#160b03;
+  --live:#5fd19b;
+
+  --radius:18px;
+  --radius-sm:10px;
+  --container:1360px;
+  --pad:clamp(16px,4vw,48px);
+  --section:clamp(72px,9vw,128px);
+
+  --font-display:"Space Grotesk",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:16px/1.6 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--container);margin:0 auto;padding:0 var(--pad)}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;line-height:1.05}
+
+/* ── Buttons & chips ──────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap;transition:transform .15s,background .15s}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:#ff9d5c}
+.btn-ghost{border:1px solid var(--line);background:var(--surface)}
+.btn-ghost:hover{border-color:#3a3a45}
+.btn-sm{height:38px;padding:0 16px;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;font-weight:500;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--text-2)}
+.chip.ai{border-color:rgba(255,138,61,.45);color:var(--accent)}
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+
+/* ── Frames (заглушки картинок) ───────────────────────────── */
+.frame{position:relative;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:var(--surface-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.frame::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 40%,rgba(0,0,0,.55));pointer-events:none}
+.g1{background:linear-gradient(135deg,#1f1430 0%,#5b2a4a 45%,#d8743a 100%)}
+.g2{background:linear-gradient(160deg,#0d2230 0%,#1d5560 50%,#9ed0c4 100%)}
+.g3{background:linear-gradient(120deg,#151515 0%,#3a3328 50%,#c9a46a 100%)}
+.g4{background:linear-gradient(200deg,#2b0f12 0%,#7a2330 50%,#f0a36b 100%)}
+.g5{background:linear-gradient(140deg,#0f1324 0%,#2a3b7a 55%,#8fa6ff 100%)}
+.g6{background:linear-gradient(170deg,#101a12 0%,#2f5a35 50%,#c5e08a 100%)}
+.g7{background:linear-gradient(130deg,#1a1a1f 0%,#34343e 60%,#6c6c7a 100%)}
+.play{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgba(10,10,12,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);z-index:1}
+.play::before{content:"";position:absolute;left:26px;top:21px;border-left:16px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent}
+.badge{position:absolute;z-index:1;font-size:12px;font-weight:600;padding:4px 9px;border-radius:6px;background:rgba(10,10,12,.7);backdrop-filter:blur(6px)}
+.badge.br{right:12px;bottom:12px}
+.badge.tl{left:12px;top:12px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--live);margin-right:6px;vertical-align:1px}
+.ph{position:absolute;left:14px;bottom:12px;z-index:1;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+
+/* ── Header ───────────────────────────────────────────────── */
+header{position:sticky;top:0;z-index:10;background:rgba(10,10,12,.78);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:24px}
+.logo{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.02em}
+.logo span{color:var(--accent)}
+.links{display:flex;gap:28px;font-size:15px;color:var(--text-2)}
+.links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.menu{display:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);position:relative}
+.menu::before,.menu::after{content:"";position:absolute;left:11px;right:11px;height:2px;background:var(--text);border-radius:2px}
+.menu::before{top:14px}.menu::after{top:21px}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.hero{position:relative;padding:clamp(48px,7vw,104px) 0 var(--section)}
+.hero::before{content:"";position:absolute;inset:-72px 0 0;background:radial-gradient(60% 70% at 78% 30%,rgba(255,138,61,.16),transparent 70%),radial-gradient(50% 60% at 10% 10%,rgba(143,166,255,.08),transparent 70%);pointer-events:none;z-index:-1}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(32px,5vw,72px);align-items:center}
+.hero h1{font-size:clamp(40px,5.6vw,84px);margin:18px 0 24px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p.lead{font-size:clamp(17px,1.4vw,20px);color:var(--text-2);max-width:560px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:32px 0 28px}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;font-size:14px;color:var(--text-2)}
+.tools b{color:var(--text);font-weight:500}
+.reel-cap{display:flex;justify-content:space-between;margin-top:14px;font-size:14px;color:var(--text-2)}
+
+/* ── Sections ─────────────────────────────────────────────── */
+section{padding:var(--section) 0;border-top:1px solid rgba(255,255,255,.05)}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:40px;flex-wrap:wrap}
+.sec-head h2{font-size:clamp(32px,4vw,56px)}
+.sec-head h2 small{display:block;font-family:var(--font-body);font-size:14px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.sec-head p{max-width:440px;color:var(--text-2)}
+
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.card h3{font-size:22px;margin:16px 0 6px}
+.card p{color:var(--text-2);font-size:15px;margin-bottom:12px}
+.card .kind{font-size:13px;color:var(--text-2);margin-top:16px}
+
+/* featured: first card bigger */
+.featured{display:grid;grid-template-columns:1.4fr 1fr;grid-template-rows:auto auto;gap:24px}
+.featured .card:first-child{grid-row:span 2}
+.featured .card:first-child .frame{aspect-ratio:4/3}
+
+/* case */
+.case{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(16px,2.4vw,32px)}
+.browser{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--surface-2)}
+.browser .bar{display:flex;gap:6px;align-items:center;height:34px;padding:0 14px;border-bottom:1px solid var(--line)}
+.browser .bar i{width:10px;height:10px;border-radius:50%;background:#3a3a45}
+.browser .bar span{margin-left:12px;font-size:12px;color:var(--text-2)}
+.browser .frame{border-radius:0;box-shadow:none}
+.case h3{font-size:clamp(28px,3vw,40px);margin:10px 0 20px}
+.rows{display:grid;gap:14px;margin-bottom:24px}
+.rows div{display:grid;grid-template-columns:110px 1fr;gap:12px;font-size:15px}
+.rows dt{color:var(--text-2)}
+.case-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.next-up{margin-top:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 24px;border:1px dashed #34343e;border-radius:var(--radius);color:var(--text-2)}
+.next-up b{color:var(--text);font-weight:600}
+
+/* game */
+.game{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(24px,4vw,56px);align-items:start}
+.devlog{list-style:none;display:grid;gap:0;margin-top:8px}
+.devlog li{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:15px}
+.devlog li span{color:var(--text-2)}
+.devlog li.next span{color:var(--accent)}
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.shots .frame{border-radius:var(--radius-sm)}
+
+/* ai */
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+.tool .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:18px;background:var(--surface-2);border:1px solid var(--line);color:var(--accent)}
+.tool h3{font-size:22px;margin:20px 0 8px}
+.tool p{color:var(--text-2);font-size:15px}
+.thumbs-head{display:flex;justify-content:space-between;align-items:end;margin:56px 0 18px;gap:16px;flex-wrap:wrap}
+.thumbs-head h3{font-size:24px}
+.thumbs-head p{color:var(--text-2);font-size:15px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid-4 .frame{border-radius:var(--radius-sm)}
+.thumb-title{position:absolute;left:14px;right:14px;bottom:12px;z-index:1;font-family:var(--font-display);font-weight:700;font-size:clamp(16px,1.6vw,22px);line-height:1.05;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+
+/* how */
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.how div{padding-top:20px;border-top:1px solid var(--line)}
+.how b{display:block;font-family:var(--font-display);font-size:20px;font-weight:600;margin-bottom:8px}
+.how p{color:var(--text-2);font-size:15px}
+
+/* contact */
+.contact{text-align:center;padding:clamp(48px,7vw,96px) var(--pad);background:radial-gradient(70% 120% at 50% 0%,rgba(255,138,61,.18),transparent 70%),var(--surface);border:1px solid var(--line);border-radius:28px}
+.contact h2{font-size:clamp(36px,5.4vw,80px);margin:16px 0 18px}
+.contact p{color:var(--text-2);max-width:520px;margin:0 auto}
+.contact .cta{justify-content:center}
+.contact .mail{font-size:15px;color:var(--text-2)}
+.contact .mail b{color:var(--text);font-weight:500}
+
+footer{padding:40px 0 48px;color:var(--text-2);font-size:14px}
+footer .container{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width:1020px){
+  .links{display:none}
+  .menu{display:block}
+  .hero-grid,.case,.game{grid-template-columns:1fr}
+  .featured{grid-template-columns:1fr 1fr}
+  .featured .card:first-child{grid-column:span 2;grid-row:auto}
+  .featured .card:first-child .frame{aspect-ratio:16/9}
+  .grid-3{grid-template-columns:1fr 1fr}
+  .grid-4{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+  .nav{height:64px}
+  .nav-right .btn-sm{padding:0 14px}
+  .featured,.grid-3,.how{grid-template-columns:1fr}
+  .featured .card:first-child{grid-column:auto}
+  .sec-head{margin-bottom:28px}
+  .rows div{grid-template-columns:1fr;gap:2px}
+  .devlog li{grid-template-columns:1fr;gap:2px}
+  .cta .btn{flex:1 1 100%;justify-content:center}
+  .play{width:52px;height:52px;margin:-26px 0 0 -26px}
+  .play::before{left:21px;top:16px;border-left-width:13px;border-top-width:10px;border-bottom-width:10px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a class="logo" href="#">DAMIR<span>.</span></a>
+    <nav class="links">
+      <a href="#work">Work</a><a href="#video">Video</a><a href="#web">Websites</a><a href="#game">Game dev</a><a href="#ai">AI</a><a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-right">
+      <a class="btn btn-primary btn-sm" href="#contact">Hire me</a>
+      <span class="menu" aria-label="Menu"></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">Video editor · AI developer · Game dev</div>
+        <h1>I turn ideas into <em>videos, websites and games</em> — fast, with AI.</h1>
+        <p class="lead">Freelance video editor who makes AI short films, designs thumbnails and builds web apps with Claude Code. Send me a reference — I’ll match it.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#contact">Message on Telegram</a>
+          <a class="btn btn-ghost" href="#contact">Email me</a>
+        </div>
+        <div class="tools">Daily tools: <b>Claude Code</b><b>ChatGPT</b><b>Higgsfield</b></div>
+      </div>
+      <div>
+        <div class="frame g1"><span class="play"></span><span class="badge br">1:30</span><span class="ph">Showreel</span></div>
+        <div class="reel-cap"><span>Showreel 2026 — editing &amp; AI video</span><span>Watch ↗</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELECTED WORK -->
+  <section id="work">
+    <div class="container">
+      <div class="sec-head">
+        <h2><small>Selected work</small>Best of what I do</h2>
+        <p>Three projects that show the range: a full website built with a team, an AI short film, and my own game.</p>
+      </div>
+      <div class="featured">
+        <a class="card" href="#web">
+          <div class="frame g3"><span class="badge tl"><span class="dot"></span>Live</span><span class="ph">Go Fashion — screenshot</span></div>
+          <div class="kind">Website · Team project</div>
+          <h3>Go Fashion</h3>
+          <p>A complete fashion website we built from scratch as a team — from first idea to launch.</p>
+          <div class="chips"><span class="chip">Web</span><span class="chip ai">Claude Code</span><span class="chip">Team</span></div>
+        </a>
+        <a class="card" href="#video">
+          <div class="frame g4"><span class="play"></span><span class="badge br">2:47</span></div>
+          <div class="kind">AI short film</div>
+          <h3>Mini film, made with AI</h3>
+          <div class="chips"><span class="chip ai">Higgsfield</span><span class="chip ai">ChatGPT</span><span class="chip">Edit</span></div>
+        </a>
+        <a class="card" href="#game">
+          <div class="frame g5"><span class="badge tl">In development</span><span class="ph">Game — screenshot</span></div>
+          <div class="kind">Game dev</div>
+          <h3>My game — early build</h3>
+          <div class="chips"><span class="chip">Game design</span><span class="chip ai">AI-assisted</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section id="video">
+    <div class="container">
+      <div class="sec-head">
+        <h2><small>01 — Video</small>Editing &amp; AI films</h2>
+        <p>Editing to your reference, AI-generated shots and short films, thumbnails that get the click.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><div class="frame g4"><span class="play"></span><span class="badge br">2:47</span></div><h3>AI short film</h3><div class="chips"><span class="chip ai">AI</span><span class="chip">Story</span><span class="chip">Edit</span></div></div>
+        <div class="card"><div class="frame g2"><span class="play"></span><span class="badge br">0:45</span></div><h3>Brand promo edit</h3><div class="chips"><span class="chip">Edit</span><span class="chip">Color</span><span class="chip">Sound</span></div></div>
+        <div class="card"><div class="frame g6"><span class="play"></span><span class="badge br">0:30</span></div><h3>Reels pack ×5</h3><div class="chips"><span class="chip">Vertical</span><span class="chip">Edit</span></div></div>
+        <div class="card"><div class="frame g1"><span class="play"></span><span class="badge br">3:12</span></div><h3>Music video edit</h3><div class="chips"><span class="chip">Edit</span><span class="chip ai">AI shots</span></div></div>
+        <div class="card"><div class="frame g7"><span class="play"></span><span class="badge br">1:05</span></div><h3>Edit to reference</h3><div class="chips"><span class="chip">Reference</span><span class="chip">Edit</span></div></div>
+        <div class="card"><div class="frame g3"><span class="play"></span><span class="badge br">1:58</span></div><h3>AI concept trailer</h3><div class="chips"><span class="chip ai">Higgsfield</span><span class="chip">Trailer</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WEBSITES -->
+  <section id="web">
+    <div class="container">
+      <div class="sec-head">
+        <h2><small>02 — Websites</small>Sites &amp; apps, built with AI</h2>
+        <p>I vibe-code with Claude Code: from an empty folder to a working site — quickly and properly.</p>
+      </div>
+      <div class="case">
+        <div class="browser">
+          <div class="bar"><i></i><i></i><i></i><span>gofashion — live site</span></div>
+          <div class="frame g3"><span class="ph">Go Fashion — home page screenshot</span></div>
+        </div>
+        <div>
+          <div class="eyebrow">Case study · Team project</div>
+          <h3>Go Fashion</h3>
+          <dl class="rows">
+            <div><dt>Task</dt><dd>Launch a fashion brand website — starting from zero.</dd></div>
+            <div><dt>What we did</dt><dd>Designed and built the full site as a team; I worked on it with Claude Code.</dd></div>
+            <div><dt>Result</dt><dd>A finished, working website — live and ready for customers.</dd></div>
+          </dl>
+          <div class="chips"><span class="chip ai">Claude Code</span><span class="chip">Web design</span><span class="chip">Team</span></div>
+          <div class="case-actions">
+            <a class="btn btn-primary btn-sm" href="#">View case</a>
+            <a class="btn btn-ghost btn-sm" href="#">Live site ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="next-up"><span><span class="dot" style="background:var(--accent)"></span><b>New project in progress.</b> Case study coming soon.</span><span>2026</span></div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section id="game">
+    <div class="container">
+      <div class="sec-head">
+        <h2><small>03 — Game dev</small>My own game</h2>
+        <p>Early development — but the world is taking shape. Follow the progress.</p>
+      </div>
+      <div class="game">
+        <div>
+          <div class="frame g5"><span class="badge tl">Early development</span><span class="ph">Gameplay screenshot</span></div>
+          <div class="shots">
+            <div class="frame g2"></div><div class="frame g7"></div><div class="frame g6"></div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:28px;margin-bottom:6px">Working title</h3>
+          <p style="color:var(--text-2);margin-bottom:12px">Design, code and visuals — with AI as my co-pilot.</p>
+          <ul class="devlog">
+            <li><span>Done</span>Core gameplay prototype</li>
+            <li><span>Done</span>First playable level</li>
+            <li><span>In progress</span>Characters and art style</li>
+            <li class="next"><span>Next</span>Trailer and demo build</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI -->
+  <section id="ai">
+    <div class="container">
+      <div class="sec-head">
+        <h2><small>04 — AI</small>AI is in every project</h2>
+        <p>Not a buzzword — my everyday toolkit. Look for the orange tags on each work.</p>
+      </div>
+      <div class="grid-3">
+        <div class="tool"><div class="ic">CC</div><h3>Claude Code</h3><p>Vibe-coding websites, apps and game logic. Fast prototypes, clean results.</p></div>
+        <div class="tool"><div class="ic">GPT</div><h3>ChatGPT</h3><p>Scripts, ideas, prompts and copy — the thinking part of every project.</p></div>
+        <div class="tool"><div class="ic">HF</div><h3>Higgsfield</h3><p>AI video and image generation for short films, shots and visuals.</p></div>
+      </div>
+      <div class="thumbs-head">
+        <h3>Thumbnails &amp; covers</h3>
+        <p>Designed to get the click.</p>
+      </div>
+      <div class="grid-4">
+        <div class="frame g4"><span class="thumb-title">I made a film with AI</span></div>
+        <div class="frame g2"><span class="thumb-title">24 hours to build a site</span></div>
+        <div class="frame g1"><span class="thumb-title">Devlog #1</span></div>
+        <div class="frame g6"><span class="thumb-title">Edit like the reference</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW I WORK -->
+  <section>
+    <div class="container">
+      <div class="sec-head"><h2><small>How I work</small>Simple and fast</h2></div>
+      <div class="how">
+        <div><b>Reference in — result out</b><p>Show me what you like. I’ll match the style and deliver on time.</p></div>
+        <div><b>I learn fast</b><p>New tool or new task — I pick it up quickly and get it done.</p></div>
+        <div><b>Freelance-ready</b><p>Clear deadlines, quick replies, revisions included.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="border-top:0">
+    <div class="container">
+      <div class="contact">
+        <div class="eyebrow">Open for projects</div>
+        <h2>Let’s make something.</h2>
+        <p>Video, website or something in between — write me, I usually reply within a day.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#">Telegram @Dasifor</a>
+          <a class="btn btn-ghost" href="#">Email me</a>
+        </div>
+        <div class="mail">or write to <b>damirnikola5@gmail.com</b></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <span>© 2026 Damir</span>
+    <span>This site is built by me — with Claude Code.</span>
+  </div>
+</footer>
+
+</body>
+</html>
