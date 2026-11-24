@@ -46,14 +46,14 @@ requirements = [
 ]
 components = ["package.json", "astro.config.mjs", ".github/workflows/", "src/layouts/", "src/styles/", "scripts/"]
 depends = []
-status = "Needs Owner"
+status = "Planned"
 priority = "P1"
 size = "M"
-owner_question = "Есть аккаунт GitHub? И можно поставить на компьютер Node.js — бесплатную программу для сборки сайта?"
-owner_options = ["Да / да", "Нет аккаунта — заведу"]
+owner_question = "Какой у тебя ник на GitHub (или «нет аккаунта»)?"
 owner_advice = "Репозиторий открытый и с именем <ник>.github.io — тогда адрес сайта https://<ник>.github.io; открытый код — плюс для портфолио."
-owner_default = "Без Node.js каркас не собрать — ждём ответа."
-next = "Макет одобрен 24.11. Первое сообщение исполнителю готово: docs/roadmap/briefs/T-002.md. Ждёт: постоянная папка с git, GitHub, Node.js."
+owner_default = "Каркас собираем локально; выкладку подключим, когда будет GitHub."
+decisions = ["Дамир 24.11: Node.js — ставим (поставлен v26.13.1)"]
+next = "Готово к запуску: карточка чата-исполнителя у Дамира (brief: docs/roadmap/briefs/T-002.md). Выкладка — после GitHub Дамира."
 added = 2026-11-24
 
 [[task]]

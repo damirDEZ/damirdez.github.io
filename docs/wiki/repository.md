@@ -17,6 +17,8 @@ docs/design/system.html           — витрина компонентов (+ s
 docs/design/home/                 — одобренный макет главной: html, снимки, описание
 docs/design/tools/shoot.py        — снимки макетов headless Chrome (390/1280/1920)
 docs/known-issues.md              — известные проблемы
+.gitattributes                    — переводы строк LF для всех файлов
+.gitignore                        — сборка, зависимости, снимки, секреты
 ```
 
 ## Где находится …
