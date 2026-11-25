@@ -22,6 +22,7 @@ decisions = [
   "Дамир 24.11: блог не нужен; LinkedIn пока не нужен",
   "Дамир 24.11: контакты — Telegram @Dasifor, почта damirnikola5@gmail.com",
   "Дамир 24.11: макет главной — да: тёмный стиль с оранжевым акцентом, порядок разделов как в макете",
+  "Дамир 25.11: обещания на сайте верны — «I usually reply within a day» и «revisions included» оставляем (отметки needsConfirmation снимает T-013)",
 ]
 children = ["T-002", "T-003", "T-004", "T-005", "T-006", "T-007", "T-008", "T-009"]
 components = []
