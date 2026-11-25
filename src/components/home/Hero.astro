@@ -1,0 +1,123 @@
+---
+// Первый экран: подпись, H1 с акцентной частью, лид, кнопки Telegram и почты, инструменты, кадр шоурила.
+// Фоновое свечение — на всю ширину окна (system.md → «Отступы и сетка»).
+import { hero } from '../../data/hero';
+import { ui } from '../../data/ui';
+import { resolveLink } from '../../lib/links';
+import ContactButtons from './ContactButtons.astro';
+import Frame from './Frame.astro';
+
+const { showreel } = hero;
+const watch = resolveLink(showreel?.videoUrl);
+---
+
+<div class="hero">
+  <div class:list={['container', 'hero-grid', { solo: !showreel }]}>
+    <div>
+      <p class="eyebrow">{hero.eyebrow}</p>
+      <h1>{hero.title.start}<em>{hero.title.accent}</em>{hero.title.end}</h1>
+      <p class="lead">{hero.lead}</p>
+      <ContactButtons telegramLabel={hero.telegramLabel} emailLabel={hero.emailLabel} />
+      {
+        hero.tools.length > 0 && (
+          <p class="tools">
+            {hero.toolsLabel}
+            {hero.tools.map((tool) => (
+              <>
+                {' '}
+                <b>{tool}</b>
+              </>
+            ))}
+          </p>
+        )
+      }
+    </div>
+    {
+      showreel && (
+        <div>
+          <Frame media={showreel.media} play duration={showreel.duration} eager />
+          <div class="reel-cap">
+            <span>{showreel.caption}</span>
+            {watch && (
+              <a href={watch.href} target={watch.external ? '_blank' : undefined} rel={watch.external ? 'noopener' : undefined}>
+                {showreel.watchLabel}
+                {watch.external && <span class="visually-hidden"> {ui.newTab}</span>}
+              </a>
+            )}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .hero {
+    position: relative;
+    padding: clamp(48px, 7vw, 104px) 0 var(--section);
+  }
+  /* Свечение заходит под шапку (72px) и тянется на всю ширину окна */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: -72px 0 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 70% at 78% 30%, rgb(255 138 61 / 0.16), transparent 70%),
+      radial-gradient(50% 60% at 10% 10%, rgb(143 166 255 / 0.08), transparent 70%);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+  .solo {
+    grid-template-columns: 1fr;
+  }
+  h1 {
+    margin: 18px 0 var(--s-6);
+    font-size: var(--fs-h1);
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .lead {
+    max-width: 560px;
+    font-size: var(--fs-lead);
+    color: var(--text-2);
+  }
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) 18px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .tools b {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .reel-cap {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 14px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .reel-cap a {
+    transition: color var(--ease);
+  }
+  .reel-cap a:hover {
+    color: var(--text);
+  }
+
+  @media (max-width: 1020px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

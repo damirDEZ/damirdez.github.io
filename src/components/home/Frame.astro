@@ -1,0 +1,267 @@
+---
+// Кадр (docs/design/system.md → «Кадр»), вид — как в макетах docs/design/home/home.html и docs/design/case/case.html
+// (.frame, .g1…g7, .g3b, .g3c, экран телефона .phone .frame, обложка кейса .cover .frame).
+// Картинка из данных или градиент-заглушка; виньетка; поверх — кнопка Play (только вид, плеер — T-005),
+// длительность, бейдж, подпись заглушки, заголовок обложки. Общий для главной и страницы кейса.
+import type { Badge, Media } from '../../data/types';
+import { ui } from '../../data/ui';
+import { assetUrl } from '../../lib/links';
+
+interface Props {
+  media: Media;
+  /**
+   * default — скругление 18; small — 10 (маленькие кадры, обложки); browser — без скругления и рамки (в окне браузера);
+   * phone — экран телефона 9:19 со скруглением 20 и вырезом сверху (кадр телефона в галерее кейса).
+   */
+  variant?: 'default' | 'small' | 'browser' | 'phone';
+  /** Первая работа в Selected work: 4:3 шире 1020px, 16:9 уже. */
+  featured?: boolean;
+  /** Обложка страницы кейса: 16:8.5, ≤640px — 4:3. */
+  cover?: boolean;
+  /** Кнопка Play — только вид. */
+  play?: boolean;
+  duration?: string | undefined;
+  badge?: Badge | undefined;
+  /** Крупный заголовок обложки — только на заглушке (на настоящей обложке он уже нарисован). */
+  coverTitle?: string;
+  /** Кадр на первом экране: картинка грузится сразу, а не по мере прокрутки. */
+  eager?: boolean;
+}
+
+const {
+  media,
+  variant = 'default',
+  featured = false,
+  cover = false,
+  play = false,
+  duration,
+  badge,
+  coverTitle,
+  eager = false,
+} = Astro.props;
+const src = media.image ? assetUrl(media.image) : undefined;
+---
+
+<div class:list={['frame', variant, { featured, cover, 'has-image': src }, !src && media.gradient]}>
+  {
+    src ? (
+      <img
+        src={src}
+        alt={media.alt}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : undefined}
+        decoding="async"
+      />
+    ) : (
+      <span class="alt" role="img" aria-label={media.alt} />
+    )
+  }
+  {!src && media.placeholderLabel && <span class="ph" aria-hidden="true">{media.placeholderLabel}</span>}
+  {!src && coverTitle && <span class="cover-title" aria-hidden="true">{coverTitle}</span>}
+  {play && <span class="play" aria-hidden="true" />}
+  {/* Без пробелов между частями бейджа — как в макете */}
+  {duration && <span class="badge br"><span class="visually-hidden">{ui.duration} </span>{duration}</span>}
+  {badge && <span class="badge tl">{badge.live && <span class="dot" aria-hidden="true" />}{badge.text}</span>}
+</div>
+
+<style>
+  .frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r);
+    overflow: hidden;
+    background: var(--surface-2);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+  /* Виньетка */
+  .frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 90% at 50% 40%, transparent 40%, rgb(0 0 0 / 0.55));
+    pointer-events: none;
+  }
+  /* Картинка закрывает внутреннюю рамку — рисуем её поверх, вместе с виньеткой */
+  .has-image::after {
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+  .small {
+    border-radius: var(--r-sm);
+  }
+  .browser {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .browser.has-image::after {
+    box-shadow: none;
+  }
+  .featured {
+    aspect-ratio: 4 / 3;
+  }
+  .cover {
+    aspect-ratio: 16 / 8.5;
+  }
+  .phone {
+    aspect-ratio: 9 / 19;
+    border-radius: 20px;
+  }
+  /* Вырез сверху экрана телефона */
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    z-index: 2;
+    width: 72px;
+    height: 18px;
+    margin-left: -36px;
+    border-radius: var(--r-pill);
+    background: #050506;
+  }
+
+  img,
+  .alt {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  img {
+    object-fit: cover;
+  }
+
+  /* Градиенты-заглушки g1…g7 — как в макете */
+  .g1 {
+    background: linear-gradient(135deg, #1f1430 0%, #5b2a4a 45%, #d8743a 100%);
+  }
+  .g2 {
+    background: linear-gradient(160deg, #0d2230 0%, #1d5560 50%, #9ed0c4 100%);
+  }
+  .g3 {
+    background: linear-gradient(120deg, #151515 0%, #3a3328 50%, #c9a46a 100%);
+  }
+  .g3b {
+    background: linear-gradient(200deg, #151515 0%, #40382b 55%, #b89660 100%);
+  }
+  .g3c {
+    background: linear-gradient(160deg, #1a1712 0%, #4a3f2e 50%, #d6b37a 100%);
+  }
+  .g4 {
+    background: linear-gradient(200deg, #2b0f12 0%, #7a2330 50%, #f0a36b 100%);
+  }
+  .g5 {
+    background: linear-gradient(140deg, #0f1324 0%, #2a3b7a 55%, #8fa6ff 100%);
+  }
+  .g6 {
+    background: linear-gradient(170deg, #101a12 0%, #2f5a35 50%, #c5e08a 100%);
+  }
+  .g7 {
+    background: linear-gradient(130deg, #1a1a1f 0%, #34343e 60%, #6c6c7a 100%);
+  }
+
+  .play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    border-radius: 50%;
+    background: rgb(10 10 12 / 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgb(255 255 255 / 0.25);
+  }
+  .play::before {
+    content: '';
+    position: absolute;
+    left: 26px;
+    top: 21px;
+    border-left: 16px solid #fff;
+    border-top: 11px solid transparent;
+    border-bottom: 11px solid transparent;
+  }
+
+  .badge {
+    position: absolute;
+    z-index: 1;
+    font-size: var(--fs-chip);
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 6px;
+    background: rgb(10 10 12 / 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .br {
+    right: 12px;
+    bottom: 12px;
+  }
+  .tl {
+    left: 12px;
+    top: 12px;
+  }
+  .dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--success);
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+
+  /* Подпись заглушки: что здесь будет */
+  .ph {
+    position: absolute;
+    left: 14px;
+    bottom: 12px;
+    z-index: 1;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.55);
+  }
+  /* Узкий экран телефона: длинная подпись переносится, не доходя до края (как в макете кейса) */
+  .phone .ph {
+    right: 14px;
+  }
+
+  .cover-title {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    z-index: 1;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(16px, 1.6vw, 22px);
+    line-height: 1.05;
+    text-transform: uppercase;
+    text-shadow: 0 2px 12px rgb(0 0 0 / 0.5);
+  }
+
+  @media (max-width: 1020px) {
+    .featured {
+      aspect-ratio: 16 / 9;
+    }
+  }
+  @media (max-width: 640px) {
+    .cover {
+      aspect-ratio: 4 / 3;
+    }
+    .play {
+      width: 52px;
+      height: 52px;
+      margin: -26px 0 0 -26px;
+    }
+    .play::before {
+      left: 21px;
+      top: 16px;
+      border-left-width: 13px;
+      border-top-width: 10px;
+      border-bottom-width: 10px;
+    }
+  }
+</style>

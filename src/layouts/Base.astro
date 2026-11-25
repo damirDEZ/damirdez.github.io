@@ -1,0 +1,81 @@
+---
+// Общий каркас страницы: <head>, шапка, подвал. Все страницы сайта строятся на нём.
+// В <head> — заголовок и описание, карточка ссылки для мессенджеров (og:*, twitter:card), канонический адрес,
+// иконки сайта и цвет темы. Как устроено и как перерисовать карточки и иконки — docs/wiki/seo.md.
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/space-grotesk/500.css';
+import '@fontsource/space-grotesk/600.css';
+import '@fontsource/space-grotesk/700.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { linkCard } from '../data/link-card';
+import { ogImageSize, siteIcons } from '../lib/og';
+import { withBase } from '../lib/paths';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /**
+   * Карточка ссылки (og:image) — путь от public/: ogImagePath() из src/lib/og.ts
+   * (главная — og/home.png, кейс — og/<slug>.png). Обязательно: у каждой страницы своя карточка.
+   */
+  image: string;
+  /** og:type: website — главная, article — страница кейса. */
+  type?: 'website' | 'article';
+}
+
+const {
+  title = 'Damir — Video, Web & Games with AI',
+  description = 'Freelance video editor who makes AI short films, designs thumbnails and builds web apps with Claude Code.',
+  image,
+  type = 'website',
+} = Astro.props;
+
+// Мессенджерам нужны полные адреса. Начало — из site (SITE_URL, на GitHub Pages его задаёт workflow);
+// без него Astro подставляет адрес локальной сборки http://localhost:4321. Путь страницы уже с подпапкой (base).
+const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const imageUrl = new URL(withBase(image), pageUrl).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+    {/* Цвет панели браузера на телефоне — фон сайта (--bg в src/styles/tokens.css) */}
+    <meta name="theme-color" content="#0a0a0c" />
+    {
+      siteIcons.map((icon) => (
+        <link
+          rel={icon.rel}
+          type={icon.rel === 'icon' ? 'image/png' : undefined}
+          sizes={`${icon.size}x${icon.size}`}
+          href={withBase(icon.file)}
+        />
+      ))
+    }
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={linkCard.siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content={String(ogImageSize.width)} />
+    <meta property="og:image:height" content={String(ogImageSize.height)} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

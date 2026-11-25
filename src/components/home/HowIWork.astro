@@ -1,0 +1,49 @@
+---
+// How I work (#how): три пункта с линией сверху.
+import { howIWork } from '../../data/how-i-work';
+import Section from './Section.astro';
+import SectionHead from './SectionHead.astro';
+---
+
+<Section id="how">
+  <SectionHead id="how" head={howIWork.head} />
+  <ul class="how">
+    {
+      howIWork.items.map((item) => (
+        <li>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .how {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-6);
+    list-style: none;
+  }
+  li {
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  /* В макете — жирная строка текста: межстрочный и разрядка как у текста, не как у заголовка */
+  h3 {
+    margin-bottom: var(--s-2);
+    font-size: 20px;
+    line-height: inherit;
+    letter-spacing: normal;
+  }
+  p {
+    font-size: var(--fs-small);
+    color: var(--text-2);
+  }
+  @media (max-width: 640px) {
+    .how {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

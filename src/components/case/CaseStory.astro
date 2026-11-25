@@ -1,0 +1,165 @@
+---
+// Главы кейса (docs/design/system.md → «Глава», «Шаги», «Выноска „How AI helped“»):
+// слева номер акцентом («01 — Task»), справа H2, текст и нумерованные шаги; ниже — выноска об ИИ.
+// Нет шагов — нет списка; нет `ai` — нет выноски.
+import { caseLabels, type CasePage } from '../../data/cases';
+import Chips from '../home/Chips.astro';
+import Section from '../home/Section.astro';
+
+interface Props {
+  item: CasePage;
+}
+
+const { chapters, ai } = Astro.props.item;
+const number = (index: number) => String(index + 1).padStart(2, '0');
+---
+
+<Section narrow>
+  <div class="story">
+    {
+      chapters.map((chapter, index) => (
+        <div class="chapter">
+          <p class="num">
+            {number(index)} — {chapter.label}
+          </p>
+          <div>
+            <h2>{chapter.title}</h2>
+            {chapter.text.map((paragraph) => (
+              <p class="text">{paragraph}</p>
+            ))}
+            {chapter.steps && chapter.steps.length > 0 && (
+              <ol class="steps">
+                {chapter.steps.map((step, stepIndex) => (
+                  <li>
+                    <span class="step-num" aria-hidden="true">
+                      {stepIndex + 1}
+                    </span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </div>
+      ))
+    }
+    {
+      ai && (
+        <div class="ai-note">
+          <span class="ic" aria-hidden="true">
+            {caseLabels.aiIcon}
+          </span>
+          <div>
+            <h3>{caseLabels.aiTitle}</h3>
+            <p>{ai.text}</p>
+            <Chips items={ai.chips} />
+          </div>
+        </div>
+      )
+    }
+  </div>
+</Section>
+
+<style>
+  .story {
+    display: grid;
+    gap: var(--s-14);
+  }
+  .chapter {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: var(--s-8);
+  }
+  .num {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h2 {
+    margin-bottom: var(--s-4);
+    font-size: clamp(28px, 3.2vw, 40px);
+  }
+  .text {
+    max-width: 680px;
+    font-size: 17px;
+    color: var(--text-2);
+  }
+  .text + .text {
+    margin-top: var(--s-3);
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px var(--s-6);
+    max-width: 680px;
+    margin-top: 20px;
+    list-style: none;
+  }
+  .steps li {
+    display: flex;
+    gap: 10px;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-small);
+  }
+  .step-num {
+    min-width: 22px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .ai-note {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 28px;
+    border-radius: var(--r-lg);
+    background:
+      radial-gradient(80% 140% at 0% 0%, rgb(255 138 61 / 0.12), transparent 60%),
+      var(--surface);
+    border: 1px solid rgb(255 138 61 / 0.35);
+  }
+  .ic {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--accent);
+  }
+  h3 {
+    margin-bottom: var(--s-2);
+    font-size: 20px;
+  }
+  .ai-note p {
+    max-width: 720px;
+    margin-bottom: 14px;
+    font-size: var(--fs-small);
+    color: var(--text-2);
+  }
+
+  @media (max-width: 1020px) {
+    .chapter {
+      grid-template-columns: 1fr;
+      gap: var(--s-3);
+    }
+  }
+  @media (max-width: 640px) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+    .ai-note {
+      grid-template-columns: 1fr;
+      padding: 22px;
+    }
+  }
+</style>

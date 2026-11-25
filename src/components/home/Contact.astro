@@ -1,0 +1,10 @@
+---
+// Блок контакта (#contact) внизу главной: карточка контакта (ContactCard) с текстами из src/data/contact.ts.
+import { contactBlock } from '../../data/contact';
+import ContactCard from './ContactCard.astro';
+import Section from './Section.astro';
+---
+
+<Section id="contact" divider={false}>
+  <ContactCard title={contactBlock.title} text={contactBlock.text} />
+</Section>

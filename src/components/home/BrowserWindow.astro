@@ -1,0 +1,60 @@
+---
+// Окно браузера со снимком сайта (docs/design/system.md → «Кейс»): строка с тремя точками и адресом, под ней кадр.
+// Общее для главной (Websites) и страницы кейса (обложка, галерея). Вид — как в макетах home.html и case.html (.browser).
+import type { Media } from '../../data/types';
+import Frame from './Frame.astro';
+
+interface Props {
+  media: Media;
+  /** Текст в строке адреса; длинный обрезается многоточием. */
+  label?: string | undefined;
+  /** Обложка страницы кейса: кадр 16:8.5 (≤640px — 4:3). */
+  cover?: boolean;
+  /** Картинка грузится сразу (первый экран). */
+  eager?: boolean;
+}
+
+const { media, label, cover = false, eager = false } = Astro.props;
+---
+
+<div class="browser">
+  <div class="bar" aria-hidden="true">
+    <i />
+    <i />
+    <i />
+    {label && <span>{label}</span>}
+  </div>
+  <Frame media={media} variant="browser" cover={cover} eager={eager} />
+</div>
+
+<style>
+  .browser {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+  .bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    height: 34px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .bar i {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--line-strong);
+  }
+  .bar span {
+    margin-left: var(--s-3);
+    font-size: var(--fs-chip);
+    color: var(--text-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

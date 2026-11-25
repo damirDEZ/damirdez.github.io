@@ -1,0 +1,80 @@
+---
+// Карточка «Next work» (docs/design/system.md → «Карточка „Next work“»): следующий кейс по порядку главной
+// (src/lib/cases.ts). Слева подпись, заголовок, строка, метки, «View case →»; справа кадр; ≤1020px — кадр под текстом.
+// Вся карточка — ссылка на страницу кейса.
+import { caseLabels, type CasePage } from '../../data/cases';
+import { casePath } from '../../lib/cases';
+import { withBase } from '../../lib/paths';
+import Chips from '../home/Chips.astro';
+import Frame from '../home/Frame.astro';
+import Section from '../home/Section.astro';
+
+interface Props {
+  item: CasePage;
+}
+
+const { item } = Astro.props;
+const { cover } = item;
+---
+
+<Section labelledby="next-label">
+  <a class="next" href={withBase(casePath(item.slug))} data-next-case={item.slug}>
+    <div>
+      <p class="eyebrow" id="next-label">{caseLabels.next}</p>
+      <h2>{item.title}</h2>
+      <p class="summary">{item.summary ?? item.lead}</p>
+      <Chips items={item.chips} />
+      <span class="arrow">{caseLabels.viewCase}</span>
+    </div>
+    {
+      cover.type === 'video' ? (
+        <Frame media={cover.media} play duration={cover.duration} />
+      ) : (
+        <Frame media={cover.media} />
+      )
+    }
+  </a>
+</Section>
+
+<style>
+  .next {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: clamp(24px, 4vw, 56px);
+    align-items: center;
+    padding: clamp(16px, 2.4vw, 28px);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    transition: border-color var(--ease);
+  }
+  .next:hover {
+    border-color: var(--line-strong);
+  }
+  .eyebrow {
+    margin-bottom: 10px;
+  }
+  h2 {
+    margin-bottom: 10px;
+    font-size: clamp(28px, 3vw, 40px);
+  }
+  .summary {
+    margin-bottom: var(--s-4);
+    font-size: var(--fs-small);
+    color: var(--text-2);
+  }
+  .arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-top: 18px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  @media (max-width: 1020px) {
+    .next {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,153 @@
+---
+// Websites (#web): кейс в рамке браузера (system.md → «Кейс») + полоса «New project in progress».
+// Кнопки «View case» и «Live site ↗» — только если в данных есть ссылка.
+import { ui } from '../../data/ui';
+import { websites } from '../../data/websites';
+import { resolveLink } from '../../lib/links';
+import BrowserWindow from './BrowserWindow.astro';
+import Chips from './Chips.astro';
+import Section from './Section.astro';
+import SectionHead from './SectionHead.astro';
+
+const cases = websites.cases.map((item) => ({
+  ...item,
+  caseLink: resolveLink(item.caseUrl),
+  liveLink: resolveLink(item.liveUrl),
+}));
+const { upcoming, labels } = websites;
+---
+
+<Section id="web">
+  <SectionHead id="web" head={websites.head} />
+  {
+    cases.map((item) => (
+      <article class="case">
+        <BrowserWindow media={item.media} label={item.browserLabel} />
+        <div>
+          <p class="eyebrow">{item.eyebrow}</p>
+          <h3>{item.title}</h3>
+          <dl class="rows">
+            {item.rows.map((row) => (
+              <div>
+                <dt>{row.label}</dt>
+                <dd>{row.text}</dd>
+              </div>
+            ))}
+          </dl>
+          <Chips items={item.chips} />
+          {(item.caseLink || item.liveLink) && (
+            <div class="case-actions">
+              {item.caseLink && (
+                <a
+                  class="btn btn-primary btn-sm"
+                  href={item.caseLink.href}
+                  target={item.caseLink.external ? '_blank' : undefined}
+                  rel={item.caseLink.external ? 'noopener' : undefined}
+                >
+                  {labels.viewCase}
+                  {item.caseLink.external && <span class="visually-hidden"> {ui.newTab}</span>}
+                </a>
+              )}
+              {item.liveLink && (
+                <a
+                  class="btn btn-ghost btn-sm"
+                  href={item.liveLink.href}
+                  target={item.liveLink.external ? '_blank' : undefined}
+                  rel={item.liveLink.external ? 'noopener' : undefined}
+                >
+                  {labels.liveSite}
+                  {item.liveLink.external && <span class="visually-hidden"> {ui.newTab}</span>}
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </article>
+    ))
+  }
+  {
+    upcoming && (
+      <div class="next-up">
+        <span><span class="dot" aria-hidden="true" /><b>{upcoming.title}</b> {upcoming.text}</span>
+        {upcoming.note && <span>{upcoming.note}</span>}
+      </div>
+    )
+  }
+</Section>
+
+<style>
+  .case {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: clamp(24px, 4vw, 56px);
+    align-items: center;
+    padding: clamp(16px, 2.4vw, 32px);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+  }
+  .case + .case {
+    margin-top: var(--s-6);
+  }
+  h3 {
+    margin: 10px 0 20px;
+    font-size: clamp(28px, 3vw, 40px);
+  }
+  .rows {
+    display: grid;
+    gap: 14px;
+    margin-bottom: var(--s-6);
+  }
+  .rows div {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: var(--s-3);
+    font-size: var(--fs-small);
+  }
+  .rows dt {
+    color: var(--text-2);
+  }
+  .case-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: var(--s-6);
+  }
+  .next-up {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+    margin-top: var(--s-6);
+    padding: 20px var(--s-6);
+    border: 1px dashed #34343e;
+    border-radius: var(--r);
+    color: var(--text-2);
+  }
+  .next-up b {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+
+  @media (max-width: 1020px) {
+    .case {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .rows div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+</style>

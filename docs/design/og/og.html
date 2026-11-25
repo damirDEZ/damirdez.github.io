@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Link preview &amp; icon — mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../src/styles/tokens.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050506;color:var(--text);font:16px/1.6 "Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:40px}
+.disp{font-family:"Space Grotesk",system-ui,sans-serif}
+.lbl{font-size:13px;color:var(--text-2);letter-spacing:.08em;text-transform:uppercase;margin:0 0 14px}
+.row{display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap;margin-top:48px}
+
+/* ── OG card 1200×630 ───────────────────────── */
+.og{width:1200px;height:630px;position:relative;overflow:hidden;border-radius:4px;background:var(--bg);display:flex;flex-direction:column;padding:52px 64px 56px}
+.og::before{content:"";position:absolute;inset:0;background:radial-gradient(55% 75% at 88% 10%,rgba(255,138,61,.22),transparent 70%),radial-gradient(45% 60% at 0% 100%,rgba(143,166,255,.10),transparent 70%)}
+.og>*{position:relative}
+.og .top{display:flex;justify-content:space-between;align-items:center}
+.og .logo{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:30px;letter-spacing:.02em}
+.og .logo span{color:var(--accent)}
+.og .tg{font-size:22px;color:var(--text-2)}
+.og .tg b{color:var(--text);font-weight:500}
+.og h1{font-family:"Space Grotesk",sans-serif;font-weight:600;letter-spacing:-.025em;line-height:1.04;font-size:66px;margin:44px 0 18px;max-width:1040px}
+.og h1 em{font-style:normal;color:var(--accent)}
+.og p{font-size:24px;color:var(--text-2)}
+.frames{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.fr{position:relative;height:150px;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.fr::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 40%,rgba(0,0,0,.5))}
+.fr span{position:absolute;left:14px;bottom:12px;z-index:1;font-size:15px;font-weight:600;padding:4px 10px;border-radius:7px;background:rgba(10,10,12,.7)}
+.g1{background:linear-gradient(135deg,#1f1430 0%,#5b2a4a 45%,#d8743a 100%)}
+.g3{background:linear-gradient(120deg,#151515 0%,#3a3328 50%,#c9a46a 100%)}
+.g5{background:linear-gradient(140deg,#0f1324 0%,#2a3b7a 55%,#8fa6ff 100%)}
+
+/* ── Favicon ────────────────────────────────── */
+.icon{display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid #2a2a33;font-family:"Space Grotesk",sans-serif;font-weight:700;color:var(--text);line-height:1;flex:none}
+.icon i{font-style:normal;color:var(--accent)}
+.i180{width:180px;height:180px;border-radius:40px;font-size:108px;letter-spacing:-.06em;padding-bottom:6px}
+.i64{width:64px;height:64px;border-radius:14px;font-size:38px;letter-spacing:-.06em;padding-bottom:2px}
+.i32{width:32px;height:32px;border-radius:7px;font-size:20px;letter-spacing:-.06em;border-width:0}
+.i16{width:16px;height:16px;border-radius:4px;font-size:11px;letter-spacing:-.06em;border-width:0}
+.sizes{display:flex;gap:24px;align-items:flex-end}
+.sizes figure{display:grid;gap:10px;justify-items:center;font-size:12px;color:var(--text-2)}
+
+/* browser tab (generic) */
+.browser{width:440px}
+.tabbar{background:#1a1a1f;border-radius:12px 12px 0 0;padding:10px 10px 0;display:flex;gap:6px}
+.tab{display:flex;align-items:center;gap:10px;height:36px;padding:0 14px;border-radius:10px 10px 0 0;background:#2a2a31;font-size:13px;color:#e6e4df;width:280px;white-space:nowrap;overflow:hidden}
+.tab span{overflow:hidden;text-overflow:ellipsis}
+.tab.off{background:transparent;color:#8a8a94;width:auto}
+.urlbar{background:#2a2a31;padding:10px 14px;border-radius:0 0 12px 12px;font-size:13px;color:#a4a3ad}
+
+/* chat preview (generic messenger) */
+.chat{width:420px;background:#17171c;border-radius:16px;padding:18px}
+.bubble{background:#23232b;border-radius:14px 14px 14px 4px;padding:12px;font-size:14px}
+.bubble a{color:#8fb4ff}
+.lp{margin-top:10px;border-left:3px solid var(--accent);padding-left:10px}
+.lp b{display:block;font-size:13px;color:var(--accent)}
+.lp strong{display:block;font-size:14px;margin:2px 0}
+.lp small{display:block;font-size:13px;color:#b9b8c2;line-height:1.4}
+.lp .img{margin-top:8px;width:347px;height:183px;border-radius:8px;overflow:hidden}
+.lp .img .og{transform:scale(.2892);transform-origin:0 0}
+</style>
+</head>
+<body>
+
+<div class="lbl">Link preview card — 1200 × 630 (shown when the link is shared)</div>
+<div class="og" id="card">
+  <div class="top">
+    <div class="logo">DAMIR<span>.</span></div>
+    <div class="tg">Telegram <b>@Dasifor</b></div>
+  </div>
+  <h1>Videos, websites and games — <em>made fast, with AI.</em></h1>
+  <p>Video editor · AI developer · Game dev</p>
+  <div class="frames">
+    <div class="fr g3"><span>Website</span></div>
+    <div class="fr g1"><span>AI film</span></div>
+    <div class="fr g5"><span>Game</span></div>
+  </div>
+</div>
+
+<div class="row">
+  <div>
+    <div class="lbl">Site icon</div>
+    <div class="sizes">
+      <figure><div class="icon i180">D<i>.</i></div>180 — phone home screen</figure>
+      <figure><div class="icon i64">D<i>.</i></div>64</figure>
+      <figure><div class="icon i32">D<i>.</i></div>32 — tab</figure>
+      <figure><div class="icon i16">D<i>.</i></div>16</figure>
+    </div>
+  </div>
+
+  <div class="browser">
+    <div class="lbl">In a browser tab</div>
+    <div class="tabbar">
+      <div class="tab"><div class="icon i16">D<i>.</i></div><span>Damir — Video, Web &amp; Games with AI</span></div>
+      <div class="tab off">New tab</div>
+    </div>
+    <div class="urlbar">damir.github.io</div>
+  </div>
+</div>
+
+<div class="row">
+  <div>
+    <div class="lbl">Shared in a messenger</div>
+    <div class="chat">
+      <div class="bubble">
+        Hi! Here’s my portfolio: <a>damir.github.io</a>
+        <div class="lp">
+          <b>damir.github.io</b>
+          <strong>Damir — Video, Web &amp; Games with AI</strong>
+          <small>Freelance video editor who makes AI short films and builds web apps with Claude Code.</small>
+          <div class="img">
+            <div class="og">
+              <div class="top">
+                <div class="logo">DAMIR<span>.</span></div>
+                <div class="tg">Telegram <b>@Dasifor</b></div>
+              </div>
+              <h1>Videos, websites and games — <em>made fast, with AI.</em></h1>
+              <p>Video editor · AI developer · Game dev</p>
+              <div class="frames">
+                <div class="fr g3"><span>Website</span></div>
+                <div class="fr g1"><span>AI film</span></div>
+                <div class="fr g5"><span>Game</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

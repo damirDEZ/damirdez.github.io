@@ -1,0 +1,57 @@
+/* Базовые стили сайта: сброс, текст, контейнер, кнопки.
+   Цвета, шрифты, отступы, скругления — из tokens.css; размеры кнопок — как в system.md / system.html.
+   Горизонтальное переполнение не прячем (overflow-x:hidden нет): его ловит npm run shots. */
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{color-scheme:dark}
+
+/* Отступ под липкую шапку при переходе по якорю (system.md → «Отступ под шапку»): = высота шапки. */
+html{scroll-padding-top:72px}
+@media (max-width:640px){html{scroll-padding-top:64px}}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font:var(--fs-body)/1.6 var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+a{color:inherit;text-decoration:none}
+img,svg,video{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;line-height:1.05}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.container{max-width:var(--container);margin:0 auto;padding:0 var(--pad)}
+
+/* Подпись (eyebrow) — system.md → «Типографика» */
+.eyebrow{font-size:var(--fs-caption);font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+
+/* Текст только для экранного диктора */
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* Меньше движения, если посетитель так настроил систему */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important}
+}
+
+/* ── Кнопки (system.md → «Кнопка главная», «Кнопка вторичная») ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  height:48px;padding:0 22px;border-radius:var(--r-pill);
+  font-family:var(--font-body);font-size:15px;font-weight:600;white-space:nowrap;
+  border:0;cursor:pointer;color:inherit;
+  transition:transform var(--ease),background var(--ease),border-color var(--ease);
+}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-primary:active{background:var(--accent-pressed);transform:scale(.98)}
+.btn-ghost{border:1px solid var(--line);background:var(--surface)}
+.btn-ghost:hover{border-color:var(--line-strong)}
+.btn-ghost:active{background:var(--surface-2);transform:scale(.98)}
+.btn:disabled,.btn[aria-disabled="true"]{background:var(--surface-2);color:var(--text-2);border:1px solid var(--line);cursor:not-allowed;transform:none}
+.btn-sm{height:38px;padding:0 16px;font-size:14px}

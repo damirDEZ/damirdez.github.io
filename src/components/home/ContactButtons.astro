@@ -1,0 +1,57 @@
+---
+// Кнопки «Telegram» (главная, новая вкладка) и «Email me» (вторичная, mailto:) — первый экран и блок контакта.
+// Адреса — src/data/contacts.ts; нет адреса — нет кнопки.
+import { contacts } from '../../data/contacts';
+import { ui } from '../../data/ui';
+
+interface Props {
+  telegramLabel: string;
+  emailLabel: string;
+  /** По центру (блок контакта). */
+  centered?: boolean;
+  /** Отступы сверху и снизу поменьше — контакт в кейсе (макет docs/design/case/case.html). */
+  compact?: boolean;
+}
+
+const { telegramLabel, emailLabel, centered = false, compact = false } = Astro.props;
+const { telegram, email } = contacts;
+---
+
+{
+  (telegram || email) && (
+    <div class:list={['cta', { centered, compact }]}>
+      {telegram && (
+        <a class="btn btn-primary" href={telegram.url} target="_blank" rel="noopener">
+          {telegramLabel}
+          <span class="visually-hidden"> {ui.newTab}</span>
+        </a>
+      )}
+      {email && (
+        <a class="btn btn-ghost" href={`mailto:${email}`}>
+          {emailLabel}
+        </a>
+      )}
+    </div>
+  )
+}
+
+<style>
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin: var(--s-8) 0 28px;
+  }
+  .centered {
+    justify-content: center;
+  }
+  .compact {
+    margin: 28px 0 22px;
+  }
+  @media (max-width: 640px) {
+    .cta .btn {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+  }
+</style>

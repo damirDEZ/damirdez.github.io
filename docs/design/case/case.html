@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go Fashion — Case study · Damir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../src/styles/tokens.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:var(--fs-body)/1.6 var(--font-body);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--container);margin:0 auto;padding:0 var(--pad)}
+.narrow{max-width:1040px}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.02em;line-height:1.05}
+.eyebrow{font-size:var(--fs-caption);font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+
+/* buttons, chips — как в системе */
+.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:var(--r-pill);font-weight:600;font-size:15px;white-space:nowrap}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-ghost{border:1px solid var(--line);background:var(--surface)}
+.btn-sm{height:38px;padding:0 16px;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:var(--fs-chip);font-weight:500;padding:4px 10px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--text-2)}
+.chip.ai{border-color:rgba(255,138,61,.45);color:var(--accent)}
+
+/* frames */
+.frame{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:var(--surface-2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.frame::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 40%,rgba(0,0,0,.55));pointer-events:none}
+.g1{background:linear-gradient(135deg,#1f1430 0%,#5b2a4a 45%,#d8743a 100%)}
+.g3{background:linear-gradient(120deg,#151515 0%,#3a3328 50%,#c9a46a 100%)}
+.g3b{background:linear-gradient(200deg,#151515 0%,#40382b 55%,#b89660 100%)}
+.g3c{background:linear-gradient(160deg,#1a1712 0%,#4a3f2e 50%,#d6b37a 100%)}
+.g4{background:linear-gradient(200deg,#2b0f12 0%,#7a2330 50%,#f0a36b 100%)}
+.ph{position:absolute;left:14px;bottom:12px;right:14px;z-index:1;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.play{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:rgba(10,10,12,.55);border:1px solid rgba(255,255,255,.25);z-index:1}
+.play::before{content:"";position:absolute;left:22px;top:17px;border-left:14px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent}
+.badge{position:absolute;z-index:1;font-size:12px;font-weight:600;padding:4px 9px;border-radius:6px;background:rgba(10,10,12,.7)}
+.badge.br{right:12px;bottom:12px}
+
+/* browser & phone frames */
+.browser{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--surface-2)}
+.browser .bar{display:flex;gap:6px;align-items:center;height:34px;padding:0 14px;border-bottom:1px solid var(--line)}
+.browser .bar i{width:10px;height:10px;border-radius:50%;background:#3a3a45}
+.browser .bar span{margin-left:12px;font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.browser .frame{border-radius:0;box-shadow:none}
+.phone{width:100%;max-width:300px;justify-self:center;border-radius:var(--r-xl);padding:10px;background:var(--surface);border:1px solid var(--line)}
+.phone .frame{aspect-ratio:9/19;border-radius:20px}
+.phone .frame::before{content:"";position:absolute;z-index:2;top:10px;left:50%;width:72px;height:18px;margin-left:-36px;border-radius:999px;background:#050506}
+
+/* header */
+header{position:sticky;top:0;z-index:10;background:rgba(10,10,12,.78);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:24px}
+.logo{font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:.02em}
+.logo span{color:var(--accent)}
+.links{display:flex;gap:28px;font-size:15px;color:var(--text-2)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.menu{display:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);position:relative}
+.menu::before,.menu::after{content:"";position:absolute;left:11px;right:11px;height:2px;background:var(--text);border-radius:2px}
+.menu::before{top:14px}.menu::after{top:21px}
+
+/* case hero */
+.case-hero{position:relative;padding:40px 0 56px}
+.case-hero::before{content:"";position:absolute;inset:-72px 0 0;background:radial-gradient(55% 70% at 80% 20%,rgba(201,164,106,.14),transparent 70%);pointer-events:none;z-index:-1}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--text-2);margin-bottom:40px}
+.back:hover{color:var(--text)}
+.case-hero h1{font-size:clamp(44px,7vw,104px);margin:16px 0 20px}
+.case-hero .lead{font-size:var(--fs-lead);color:var(--text-2);max-width:640px}
+.hero-row{display:flex;align-items:end;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:48px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.meta div{padding:20px 20px 20px 0}
+.meta div+div{padding-left:20px;border-left:1px solid var(--line)}
+.meta dt{font-size:13px;color:var(--text-2);margin-bottom:4px}
+.meta dd{font-family:var(--font-display);font-size:18px;font-weight:600}
+
+.cover{margin-top:48px}
+.cover .frame{aspect-ratio:16/8.5}
+
+/* story */
+section{padding:var(--section) 0;border-top:1px solid rgba(255,255,255,.05)}
+.story{display:grid;gap:56px}
+.chapter{display:grid;grid-template-columns:220px 1fr;gap:32px}
+.chapter .num{font-size:14px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.chapter h2{font-size:clamp(28px,3.2vw,40px);margin-bottom:16px}
+.chapter p{color:var(--text-2);font-size:17px;max-width:680px}
+.chapter p+p{margin-top:12px}
+.steps{list-style:none;margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;max-width:680px}
+.steps li{display:flex;gap:10px;font-size:15px;padding:12px 0;border-bottom:1px solid var(--line)}
+.steps li b{font-family:var(--font-display);color:var(--accent);font-weight:600;min-width:22px}
+
+.ai-note{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;padding:28px;border-radius:var(--r-lg);background:radial-gradient(80% 140% at 0% 0%,rgba(255,138,61,.12),transparent 60%),var(--surface);border:1px solid rgba(255,138,61,.35)}
+.ai-note .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:16px;background:var(--surface-2);border:1px solid var(--line);color:var(--accent)}
+.ai-note h3{font-size:20px;margin-bottom:8px}
+.ai-note p{color:var(--text-2);font-size:15px;margin-bottom:14px;max-width:720px}
+
+/* gallery */
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:32px;flex-wrap:wrap}
+.sec-head h2{font-size:clamp(28px,3.2vw,40px)}
+.sec-head p{color:var(--text-2);max-width:420px;font-size:15px}
+.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:center}
+.gallery .wide{grid-column:span 2}
+.cap{font-size:13px;color:var(--text-2);margin-top:10px}
+.phones{display:contents}
+
+/* next */
+.next{display:grid;grid-template-columns:1fr 1.2fr;gap:clamp(24px,4vw,56px);align-items:center;padding:clamp(16px,2.4vw,28px);border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line)}
+.next .eyebrow{margin-bottom:10px}
+.next h3{font-size:clamp(28px,3vw,40px);margin-bottom:10px}
+.next p{color:var(--text-2);font-size:15px;margin-bottom:16px}
+.arrow{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--accent);margin-top:18px}
+
+/* contact */
+.contact{text-align:center;padding:clamp(48px,7vw,88px) var(--pad);background:radial-gradient(70% 120% at 50% 0%,rgba(255,138,61,.18),transparent 70%),var(--surface);border:1px solid var(--line);border-radius:var(--r-xl)}
+.contact h2{font-size:clamp(34px,4.6vw,64px);margin:16px 0 16px}
+.contact p{color:var(--text-2);max-width:520px;margin:0 auto}
+.contact .cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:28px 0 22px}
+.contact .mail{font-size:15px;color:var(--text-2)}
+.contact .mail b{color:var(--text);font-weight:500}
+footer{padding:40px 0 48px;color:var(--text-2);font-size:14px}
+footer .container{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* responsive */
+@media (max-width:1020px){
+  .links{display:none}.menu{display:block}
+  .meta{grid-template-columns:1fr 1fr}
+  .meta div:nth-child(3){padding-left:0;border-left:0}
+  .meta div:nth-child(n+3){border-top:1px solid var(--line)}
+  .chapter{grid-template-columns:1fr;gap:12px}
+  .next{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .nav{height:64px}
+  .case-hero{padding-top:28px}
+  .back{margin-bottom:28px}
+  .cover .frame{aspect-ratio:4/3}
+  .hero-row .btn{width:100%;justify-content:center}
+  .steps{grid-template-columns:1fr}
+  .ai-note{grid-template-columns:1fr;padding:22px}
+  .gallery{grid-template-columns:1fr 1fr;gap:16px}
+  .gallery .wide{grid-column:1 / -1}
+  .contact .cta .btn{flex:1 1 100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a class="logo" href="#">DAMIR<span>.</span></a>
+    <nav class="links"><a>Work</a><a>Video</a><a>Websites</a><a>Game dev</a><a>AI</a><a>Contact</a></nav>
+    <div class="nav-right"><a class="btn btn-primary btn-sm">Hire me</a><span class="menu"></span></div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <div class="case-hero">
+    <div class="container">
+      <a class="back" href="#">← All work</a>
+      <div class="eyebrow">Case study · Website · Team project</div>
+      <div class="hero-row">
+        <div>
+          <h1>Go Fashion</h1>
+          <p class="lead">A complete fashion website we built from scratch as a team — from the first idea to launch.</p>
+        </div>
+        <a class="btn btn-primary" href="#">Visit live site ↗</a>
+      </div>
+      <dl class="meta">
+        <div><dt>My role</dt><dd>Development with Claude Code</dd></div>
+        <div><dt>Team</dt><dd>3 people</dd></div>
+        <div><dt>Timeline</dt><dd>6 weeks</dd></div>
+        <div><dt>Year</dt><dd>2026</dd></div>
+      </dl>
+      <div class="cover">
+        <div class="browser">
+          <div class="bar"><i></i><i></i><i></i><span>gofashion — home page</span></div>
+          <div class="frame g3"><span class="ph">Go Fashion — home page screenshot</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <section>
+    <div class="container narrow story">
+      <div class="chapter">
+        <div class="num">01 — Task</div>
+        <div>
+          <h2>A brand with no website</h2>
+          <p>A fashion brand needed its own website — a place to show collections and bring in customers. We started with nothing: no design, no code, no template.</p>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="num">02 — What we did</div>
+        <div>
+          <h2>From idea to working site</h2>
+          <p>We planned the pages together, then designed and built the whole site as a team. I handled development with Claude Code: quick prototypes first, then clean, working pages.</p>
+          <ol class="steps">
+            <li><b>1</b>Page structure and design</li>
+            <li><b>2</b>Development with Claude Code</li>
+            <li><b>3</b>Testing on phone and desktop</li>
+            <li><b>4</b>Launch</li>
+          </ol>
+        </div>
+      </div>
+      <div class="chapter">
+        <div class="num">03 — Result</div>
+        <div>
+          <h2>Live and ready for customers</h2>
+          <p>A finished, working website, built from zero by a small team in a short time.</p>
+        </div>
+      </div>
+      <div class="ai-note">
+        <div class="ic">AI</div>
+        <div>
+          <h3>How AI helped</h3>
+          <p>Claude Code wrote the first version of every page; I reviewed, tested and refined it. That’s how a small team shipped a full site fast.</p>
+          <div class="chips"><span class="chip ai">Claude Code</span><span class="chip ai">ChatGPT</span><span class="chip">Web design</span><span class="chip">Team</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section>
+    <div class="container">
+      <div class="sec-head">
+        <h2>Screens</h2>
+        <p>Desktop and phone — every page works on both.</p>
+      </div>
+      <div class="gallery">
+        <div class="wide">
+          <div class="browser"><div class="bar"><i></i><i></i><i></i><span>gofashion — catalog</span></div><div class="frame g3b"><span class="ph">Catalog page</span></div></div>
+          <div class="cap">Catalog</div>
+        </div>
+        <div>
+          <div class="phone"><div class="frame g3c"><span class="ph">Home on phone</span></div></div>
+          <div class="cap" style="text-align:center">Home — phone</div>
+        </div>
+        <div>
+          <div class="phone"><div class="frame g3b"><span class="ph">Product on phone</span></div></div>
+          <div class="cap" style="text-align:center">Product — phone</div>
+        </div>
+        <div class="wide">
+          <div class="browser"><div class="bar"><i></i><i></i><i></i><span>gofashion — product</span></div><div class="frame g3c"><span class="ph">Product page</span></div></div>
+          <div class="cap">Product page</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT -->
+  <section>
+    <div class="container">
+      <a class="next" href="#">
+        <div>
+          <div class="eyebrow">Next work</div>
+          <h3>Mini film, made with AI</h3>
+          <p>An AI short film — generated, edited and scored end-to-end.</p>
+          <div class="chips"><span class="chip ai">Higgsfield</span><span class="chip ai">ChatGPT</span><span class="chip">Edit</span></div>
+          <span class="arrow">View case →</span>
+        </div>
+        <div class="frame g4"><span class="play"></span><span class="badge br">2:47</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section style="border-top:0;padding-top:0">
+    <div class="container">
+      <div class="contact">
+        <div class="eyebrow">Open for projects</div>
+        <h2>Want a site like this?</h2>
+        <p>Tell me about your idea — I’ll tell you how fast we can launch it.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#">Telegram @Dasifor</a>
+          <a class="btn btn-ghost" href="#">Email me</a>
+        </div>
+        <div class="mail">or write to <b>damirnikola5@gmail.com</b></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container"><span>© 2026 Damir</span><span>This site is built by me — with Claude Code.</span></div>
+</footer>
+
+</body>
+</html>

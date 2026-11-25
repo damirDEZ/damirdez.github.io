@@ -1,0 +1,117 @@
+---
+// AI (#ai): карточки инструментов (system.md → «Карточка инструмента») + обложки-превью («Обложка-превью»).
+import { aiSection } from '../../data/ai';
+import Frame from './Frame.astro';
+import Section from './Section.astro';
+import SectionHead from './SectionHead.astro';
+
+const { tools, covers } = aiSection;
+---
+
+<Section id="ai">
+  <SectionHead id="ai" head={aiSection.head} />
+  {
+    tools.length > 0 && (
+      <ul class="tools">
+        {tools.map((tool) => (
+          <li class="tool">
+            <span class="ic" aria-hidden="true">
+              {tool.monogram}
+            </span>
+            <h3>{tool.name}</h3>
+            <p>{tool.text}</p>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {
+    covers.items.length > 0 && (
+      <>
+        <div class:list={['thumbs-head', { first: tools.length === 0 }]}>
+          <h3>{covers.title}</h3>
+          {covers.intro && <p>{covers.intro}</p>}
+        </div>
+        <ul class="covers">
+          {covers.items.map((cover) => (
+            <li>
+              <Frame media={cover.media} variant="small" coverTitle={cover.title} />
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+</Section>
+
+<style>
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-6);
+    list-style: none;
+  }
+  .tool {
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+  }
+  .ic {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--accent);
+  }
+  .tool h3 {
+    margin: 20px 0 var(--s-2);
+    font-size: var(--fs-h3);
+  }
+  .tool p {
+    font-size: var(--fs-small);
+    color: var(--text-2);
+  }
+  .thumbs-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+    margin: var(--s-14) 0 18px;
+  }
+  .thumbs-head.first {
+    margin-top: 0;
+  }
+  .thumbs-head h3 {
+    font-size: 24px;
+  }
+  .thumbs-head p {
+    font-size: var(--fs-small);
+    color: var(--text-2);
+  }
+  .covers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--s-4);
+    list-style: none;
+  }
+
+  @media (max-width: 1020px) {
+    .tools,
+    .covers {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .tools {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

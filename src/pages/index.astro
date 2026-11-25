@@ -1,0 +1,35 @@
+---
+// Главная — по одобренному макету docs/design/home/home.html.
+// Порядок и видимость разделов — src/data/sections.ts; тексты и работы — src/data/; как заменить заглушки — docs/wiki/home.md.
+import AiSection from '../components/home/AiSection.astro';
+import Contact from '../components/home/Contact.astro';
+import GameDev from '../components/home/GameDev.astro';
+import Hero from '../components/home/Hero.astro';
+import HowIWork from '../components/home/HowIWork.astro';
+import SelectedWork from '../components/home/SelectedWork.astro';
+import VideoSection from '../components/home/VideoSection.astro';
+import Websites from '../components/home/Websites.astro';
+import Base from '../layouts/Base.astro';
+import { visibleSections, type HomeSectionId } from '../data/sections';
+import { ogImagePath } from '../lib/og';
+
+const blocks = {
+  work: SelectedWork,
+  video: VideoSection,
+  web: Websites,
+  game: GameDev,
+  ai: AiSection,
+  how: HowIWork,
+  contact: Contact,
+} satisfies Record<HomeSectionId, unknown>;
+---
+
+<Base image={ogImagePath()}>
+  <Hero />
+  {
+    visibleSections.map((section) => {
+      const Block = blocks[section.id];
+      return <Block />;
+    })
+  }
+</Base>

@@ -1,0 +1,17 @@
+---
+// Контакт в кейсе (docs/design/system.md → «Контакт в кейсе»): та же карточка контакта, что на главной,
+// заголовок и строка — под тип работы (caseLabels.contact), размеры — из макета кейса (compact).
+import { caseLabels, type CaseKind } from '../../data/cases';
+import ContactCard from '../home/ContactCard.astro';
+import Section from '../home/Section.astro';
+
+interface Props {
+  kind: CaseKind;
+}
+
+const { title, text } = caseLabels.contact[Astro.props.kind];
+---
+
+<Section id="contact" labelledby="contact-title" divider={false} flushTop>
+  <ContactCard title={title} text={text} compact />
+</Section>

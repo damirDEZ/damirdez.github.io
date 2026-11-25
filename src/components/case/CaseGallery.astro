@@ -1,0 +1,151 @@
+---
+// Галерея кейса (docs/design/system.md → «Кадр телефона»): окна браузера и кадры телефона рядами «окно + телефон»,
+// стороны чередуются (окно — 2 колонки из 3, телефон — 1); ≤640px окно на всю ширину, телефоны по два.
+// Кадров больше caseLimits.gallery — лишние не показываются. Широкие кадры (окна, still) без пары — того же размера
+// (2 колонки из 3), по одному в ряд, стороны продолжают чередоваться; телефоны без пары — по три в ряд.
+// В галерее нет ни одного телефона — две равные колонки по порядку, нечётный последний кадр на всю ширину;
+// ≤640px — одна колонка (решение менеджера 25.11).
+import { caseLimits, type CaseGallery, type CaseShot } from '../../data/cases';
+import BrowserWindow from '../home/BrowserWindow.astro';
+import Frame from '../home/Frame.astro';
+import Section from '../home/Section.astro';
+
+interface Props {
+  gallery: CaseGallery;
+}
+
+const { gallery } = Astro.props;
+
+/**
+ * wide — окно в паре с телефоном (место в ряду — по порядку); left / right — широкий кадр без пары, у левого или правого края;
+ * half / full — галерея без телефонов: половина ряда / нечётный последний кадр на всю ширину.
+ */
+type Cell = { shot: CaseShot; span: 'wide' | 'phone' | 'left' | 'right' | 'half' | 'full' };
+
+const shots = gallery.shots.slice(0, caseLimits.gallery);
+const wides = shots.filter((shot) => shot.device !== 'phone');
+const phones = shots.filter((shot) => shot.device === 'phone');
+const cells: Cell[] = [];
+if (phones.length === 0) {
+  wides.forEach((shot, index) => {
+    cells.push({ shot, span: wides.length % 2 === 1 && index === wides.length - 1 ? 'full' : 'half' });
+  });
+  wides.length = 0;
+}
+let row = 0;
+for (; wides.length > 0 && phones.length > 0; row++) {
+  const wide: Cell = { shot: wides.shift()!, span: 'wide' };
+  const phone: Cell = { shot: phones.shift()!, span: 'phone' };
+  cells.push(...(row % 2 === 0 ? [wide, phone] : [phone, wide]));
+}
+for (const shot of phones) cells.push({ shot, span: 'phone' });
+for (const shot of wides) cells.push({ shot, span: row++ % 2 === 0 ? 'left' : 'right' });
+---
+
+<Section labelledby="gallery-title">
+  <div class="sec-head">
+    <h2 id="gallery-title">{gallery.title}</h2>
+    {gallery.intro && <p>{gallery.intro}</p>}
+  </div>
+  <ul class="gallery">
+    {
+      cells.map(({ shot, span }) => (
+        <li class={span}>
+          <figure>
+            {shot.device === 'desktop' && <BrowserWindow media={shot.media} label={shot.browserLabel} />}
+            {shot.device === 'still' && <Frame media={shot.media} />}
+            {shot.device === 'phone' && (
+              <div class="device">
+                <Frame media={shot.media} variant="phone" />
+              </div>
+            )}
+            {shot.caption && <figcaption class="cap">{shot.caption}</figcaption>}
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .sec-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--s-6);
+    margin-bottom: var(--s-8);
+  }
+  h2 {
+    font-size: clamp(28px, 3.2vw, 40px);
+  }
+  .sec-head p {
+    max-width: 420px;
+    font-size: var(--fs-small);
+    color: var(--text-2);
+  }
+
+  /* 6 колонок = «3 колонки» макета: окно — 4 (2 из 3), телефон — 2 (1 из 3).
+     Широкий кадр без пары — тоже 4, у левого или правого края; новый ряд начинается сам (колонка начала левее курсора сетки). */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--s-6);
+    align-items: center;
+    list-style: none;
+  }
+  .wide {
+    grid-column: span 4;
+  }
+  .phone {
+    grid-column: span 2;
+  }
+  .left {
+    grid-column: 1 / span 4;
+  }
+  .right {
+    grid-column: 3 / span 4;
+  }
+  .half {
+    grid-column: span 3;
+  }
+  .full {
+    grid-column: 1 / -1;
+  }
+
+  /* Кадр телефона: рамка на --surface, экран 9:19 (вырез — в Frame) */
+  .device {
+    width: 100%;
+    max-width: 300px;
+    margin-inline: auto;
+    padding: 10px;
+    border-radius: var(--r-xl);
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .cap {
+    margin-top: 10px;
+    font-size: var(--fs-caption);
+    color: var(--text-2);
+  }
+  .phone .cap {
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .gallery {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-4);
+    }
+    .wide,
+    .left,
+    .right,
+    .half,
+    .full {
+      grid-column: 1 / -1;
+    }
+    .phone {
+      grid-column: auto;
+    }
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+// Карточка контакта (docs/design/system.md → «Блок контакта», «Контакт в кейсе»): поверхность со свечением,
+// подпись, крупный заголовок, строка, кнопки Telegram + почта, адрес почты текстом.
+// Главная (Contact.astro) и страница кейса (case/CaseContact.astro) меняют только заголовок и строку;
+// compact — размеры из макета кейса docs/design/case/case.html (заголовок и отступы меньше, чем на главной).
+import { contactBlock } from '../../data/contact';
+import { contacts } from '../../data/contacts';
+import ContactButtons from './ContactButtons.astro';
+
+interface Props {
+  title: string;
+  text: string;
+  compact?: boolean;
+}
+
+const { title, text, compact = false } = Astro.props;
+---
+
+<div class:list={['contact', { compact }]}>
+  <p class="eyebrow">{contactBlock.eyebrow}</p>
+  <h2 id="contact-title">{title}</h2>
+  <p class="text">{text}</p>
+  <ContactButtons
+    telegramLabel={contactBlock.telegramLabel}
+    emailLabel={contactBlock.emailLabel}
+    centered
+    compact={compact}
+  />
+  {
+    contacts.email && (
+      <p class="mail">
+        {contactBlock.mailPrefix} <b>{contacts.email}</b>
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .contact {
+    text-align: center;
+    padding: clamp(48px, 7vw, 96px) var(--pad);
+    background:
+      radial-gradient(70% 120% at 50% 0%, rgb(255 138 61 / 0.18), transparent 70%),
+      var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xl);
+  }
+  h2 {
+    margin: var(--s-4) 0 18px;
+    font-size: clamp(36px, 5.4vw, 80px);
+  }
+  .compact {
+    padding: clamp(48px, 7vw, 88px) var(--pad);
+  }
+  .compact h2 {
+    margin: var(--s-4) 0;
+    font-size: clamp(34px, 4.6vw, 64px);
+  }
+  .text {
+    max-width: 520px;
+    margin: 0 auto;
+    color: var(--text-2);
+  }
+  .mail {
+    font-size: var(--fs-small);
+    color: var(--text-2);
+  }
+  .mail b {
+    color: var(--text);
+    font-weight: 500;
+  }
+</style>

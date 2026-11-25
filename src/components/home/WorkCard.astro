@@ -1,0 +1,63 @@
+---
+// Карточка работы (docs/design/system.md → «Карточка работы»): кадр, тип работы, заголовок H3, строка описания, метки.
+// Есть ссылка — вся карточка ссылка; нет — просто блок.
+import type { Badge, Chip, Media } from '../../data/types';
+import { ui } from '../../data/ui';
+import { resolveLink } from '../../lib/links';
+import Chips from './Chips.astro';
+import Frame from './Frame.astro';
+
+interface Props {
+  title: string;
+  kind?: string | undefined;
+  description?: string | undefined;
+  chips: Chip[];
+  media: Media;
+  badge?: Badge | undefined;
+  /** Ролик: кнопка Play (только вид) и длительность. */
+  play?: boolean;
+  duration?: string | undefined;
+  /** Первая работа в Selected work — кадр 4:3. */
+  featured?: boolean;
+  /** Ссылка из данных (см. resolveLink). */
+  href?: string | undefined;
+}
+
+const { title, kind, description, chips, media, badge, play = false, duration, featured = false, href } = Astro.props;
+const link = resolveLink(href);
+const Tag = link ? 'a' : 'div';
+---
+
+<Tag
+  class="card"
+  href={link?.href}
+  target={link?.external ? '_blank' : undefined}
+  rel={link?.external ? 'noopener' : undefined}
+>
+  <Frame media={media} featured={featured} play={play} duration={duration} badge={badge} />
+  {kind && <p class="kind">{kind}</p>}
+  <h3>{title}</h3>
+  {description && <p class="desc">{description}</p>}
+  <Chips items={chips} />
+  {link?.external && <span class="visually-hidden"> {ui.newTab}</span>}
+</Tag>
+
+<style>
+  .card {
+    display: block;
+  }
+  .kind {
+    margin-top: var(--s-4);
+    font-size: var(--fs-caption);
+    color: var(--text-2);
+  }
+  h3 {
+    margin: var(--s-4) 0 6px;
+    font-size: var(--fs-h3);
+  }
+  .desc {
+    margin-bottom: var(--s-3);
+    font-size: var(--fs-small);
+    color: var(--text-2);
+  }
+</style>

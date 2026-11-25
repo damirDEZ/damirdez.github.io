@@ -1,0 +1,205 @@
+---
+// Шапка кейса (docs/design/system.md → «Страница кейса»): «← All work», подпись, H1, лид, кнопка ссылки,
+// мета-строка, обложка (окно браузера или кадр ролика). Мягкое свечение — в цвет обложки, на всю ширину окна.
+import { caseLabels, caseLimits, type CasePage } from '../../data/cases';
+import type { Gradient } from '../../data/types';
+import { ui } from '../../data/ui';
+import { resolveLink } from '../../lib/links';
+import { withBase } from '../../lib/paths';
+import BrowserWindow from '../home/BrowserWindow.astro';
+import Frame from '../home/Frame.astro';
+
+interface Props {
+  item: CasePage;
+}
+
+const { item } = Astro.props;
+const { cover } = item;
+
+/** Цвет свечения — последний цвет градиента обложки (Frame.astro; в макете для g3 — rgba(201,164,106,.14)). */
+const glow: Record<Gradient, string> = {
+  g1: '216 116 58',
+  g2: '158 208 196',
+  g3: '201 164 106',
+  g3b: '184 150 96',
+  g3c: '214 179 122',
+  g4: '240 163 107',
+  g5: '143 166 255',
+  g6: '197 224 138',
+  g7: '108 108 122',
+};
+
+// «All work» — к избранному на главной; раздел скрыт (нет работ) — на главную.
+const back = resolveLink('#work')?.href ?? withBase('/');
+
+// Нет ссылки — нет кнопки. Первая — главная (оранжевая), вторая — вторичная.
+const links = [
+  { link: resolveLink(item.liveUrl), label: caseLabels.liveSite },
+  { link: resolveLink(item.videoUrl), label: caseLabels.watch },
+].flatMap(({ link, label }) => (link ? [{ ...link, label }] : []));
+
+// Пустое значение — нет ячейки; ячеек не больше caseLimits.meta (одна строка).
+const meta = item.meta.filter((cell) => cell.value?.trim()).slice(0, caseLimits.meta);
+---
+
+<div class="case-hero" style={`--glow: ${glow[cover.media.gradient]}`}>
+  <div class="container">
+    <a class="back" href={back}>{caseLabels.back}</a>
+    <p class="eyebrow">{item.eyebrow}</p>
+    <div class="hero-row">
+      <div>
+        <h1>{item.title}</h1>
+        <p class="lead">{item.lead}</p>
+      </div>
+      {
+        links.length > 0 && (
+          <div class="actions">
+            {links.map((link, index) => (
+              <a
+                class:list={['btn', index === 0 ? 'btn-primary' : 'btn-ghost']}
+                href={link.href}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener' : undefined}
+              >
+                {link.label}
+                {link.external && <span class="visually-hidden"> {ui.newTab}</span>}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+    {
+      meta.length > 0 && (
+        <dl class="meta" style={`--cols: ${meta.length}; --cols-narrow: ${Math.min(meta.length, 2)}`}>
+          {meta.map((cell) => (
+            <div>
+              <dt>{cell.label}</dt>
+              <dd>{cell.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+    <div class="cover">
+      {
+        cover.type === 'browser' ? (
+          <BrowserWindow media={cover.media} label={cover.browserLabel} cover eager />
+        ) : (
+          <Frame media={cover.media} cover play duration={cover.duration} eager />
+        )
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .case-hero {
+    position: relative;
+    padding: var(--s-10) 0 var(--s-14);
+  }
+  /* Свечение заходит под шапку (72px) и тянется на всю ширину окна */
+  .case-hero::before {
+    content: '';
+    position: absolute;
+    inset: -72px 0 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(55% 70% at 80% 20%, rgb(var(--glow) / 0.14), transparent 70%);
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-bottom: var(--s-10);
+    font-size: 14px;
+    color: var(--text-2);
+    transition: color var(--ease);
+  }
+  .back:hover {
+    color: var(--text);
+  }
+  h1 {
+    margin: var(--s-4) 0 20px;
+    font-size: clamp(44px, 7vw, 104px);
+  }
+  .lead {
+    max-width: 640px;
+    font-size: var(--fs-lead);
+    color: var(--text-2);
+  }
+  .hero-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--s-8);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Мета-строка: ячейки между двумя линиями; число колонок = число ячеек (≤1020px — по две) */
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    margin-top: 48px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .meta div {
+    padding: 20px 20px 20px 0;
+  }
+  .meta div + div {
+    padding-left: 20px;
+    border-left: 1px solid var(--line);
+  }
+  dt {
+    margin-bottom: var(--s-1);
+    font-size: var(--fs-caption);
+    color: var(--text-2);
+  }
+  dd {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .cover {
+    margin-top: 48px;
+  }
+
+  @media (max-width: 1020px) {
+    .meta {
+      grid-template-columns: repeat(var(--cols-narrow), minmax(0, 1fr));
+    }
+    /* «div + div» в селекторе — чтобы перебить правило выше: Astro добавляет атрибут к каждой части селектора */
+    .meta div + div:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .meta div:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+    /* Нечётное число ячеек: последняя — на обе колонки, чтобы линия между рядами шла во всю ширину */
+    .meta div:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 640px) {
+    .case-hero {
+      padding-top: 28px;
+    }
+    .back {
+      margin-bottom: 28px;
+    }
+    .actions {
+      width: 100%;
+    }
+    .actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>

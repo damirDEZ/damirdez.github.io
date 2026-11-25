@@ -1,0 +1,56 @@
+# Выкладка сайта на GitHub Pages при каждом пуше в main.
+# Подробности и переменные — docs/wiki/site.md.
+#
+# Один раз в настройках репозитория: Settings → Pages → Source: «GitHub Actions».
+# Адрес и подпапка считаются сами (см. env ниже); переопределить можно переменными
+# репозитория SITE_URL и BASE_PATH (Settings → Secrets and variables → Actions → Variables).
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Сборке — только чтение кода; права на публикацию — только job deploy.
+permissions:
+  contents: read
+
+# Одна выкладка за раз; начатую не прерываем.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install, check, build and upload
+        uses: withastro/action@v6
+        with:
+          node-version: 24
+          # astro check + astro build: с ошибками типов сайт не выкладывается.
+          build-cmd: npm run check
+        env:
+          # Адрес сайта: переменная SITE_URL или https://<владелец>.github.io
+          SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
+          # Подпапка: переменная BASE_PATH; иначе "/" для репозитория <владелец>.github.io
+          # и "/<имя репозитория>" для любого другого.
+          BASE_PATH: ${{ vars.BASE_PATH || (github.event.repository.name == format('{0}.github.io', github.repository_owner) && '/' || format('/{0}', github.event.repository.name)) }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

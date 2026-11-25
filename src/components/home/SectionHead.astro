@@ -1,0 +1,53 @@
+---
+// Заголовок раздела: подпись акцентом ("01 — Video"), H2, пояснение справа (на узком экране — под заголовком).
+import { sectionEyebrow, type HomeSectionId } from '../../data/sections';
+import type { SectionHead } from '../../data/types';
+
+interface Props {
+  id: HomeSectionId;
+  head: SectionHead;
+}
+
+const { id, head } = Astro.props;
+---
+
+<div class="sec-head">
+  <div>
+    <p class="label">{sectionEyebrow(id)}</p>
+    <h2 id={`${id}-title`}>{head.title}</h2>
+  </div>
+  {head.intro && <p class="intro">{head.intro}</p>}
+</div>
+
+<style>
+  .sec-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--s-6);
+    margin-bottom: var(--s-10);
+    flex-wrap: wrap;
+  }
+  h2 {
+    font-size: var(--fs-h2);
+  }
+  /* В макете подпись — <small> внутри H2: межстрочный как у заголовка */
+  .label {
+    margin-bottom: var(--s-3);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .intro {
+    max-width: 440px;
+    color: var(--text-2);
+  }
+  @media (max-width: 640px) {
+    .sec-head {
+      margin-bottom: 28px;
+    }
+  }
+</style>

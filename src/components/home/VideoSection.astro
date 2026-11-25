@@ -1,0 +1,50 @@
+---
+// Video (#video): сетка роликов с длительностью и метками (метки ИИ — оранжевые).
+// Кнопка Play — только вид. Есть кейс (caseUrl) — карточка ведёт на страницу кейса; иначе есть videoUrl — открывает ролик
+// в новой вкладке. Плеер и «More videos» — T-005.
+import { videoSection } from '../../data/videos';
+import Section from './Section.astro';
+import SectionHead from './SectionHead.astro';
+import WorkCard from './WorkCard.astro';
+
+const items = videoSection.items.slice(0, videoSection.maxOnHome);
+---
+
+<Section id="video">
+  <SectionHead id="video" head={videoSection.head} />
+  <ul class="grid">
+    {
+      items.map((video) => (
+        <li>
+          <WorkCard
+            title={video.title}
+            chips={video.chips}
+            media={video.media}
+            play
+            duration={video.duration}
+            href={video.caseUrl ?? video.videoUrl}
+          />
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-6);
+    list-style: none;
+  }
+  @media (max-width: 1020px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+// Раздел: <section> с отступами раздела и тонкой линией сверху, контейнер внутри.
+// Главная — <Section id="work">: якорь id и заголовок с id "<id>-title" (SectionHead ставит его сам).
+// Страница кейса — без id или с id="contact"; узкая колонка (главы), без отступа сверху (контакт) — как в docs/design/case/case.html.
+import type { HomeSectionId } from '../../data/sections';
+
+interface Props {
+  /** Якорь раздела главной ("#work"). Нет — блок без якоря (страница кейса). */
+  id?: HomeSectionId;
+  /** id заголовка блока для aria-labelledby. По умолчанию "<id>-title"; нет id и labelledby — без подписи. */
+  labelledby?: string;
+  /** Линия сверху (у блока контакта её нет). */
+  divider?: boolean;
+  /** Без отступа сверху: отступ уже дал блок выше (контакт в кейсе). */
+  flushTop?: boolean;
+  /** Узкая колонка 1040px (главы кейса). */
+  narrow?: boolean;
+}
+
+const { id, labelledby = id && `${id}-title`, divider = true, flushTop = false, narrow = false } = Astro.props;
+---
+
+<section id={id} class:list={['section', { divider, 'flush-top': flushTop }]} aria-labelledby={labelledby}>
+  <div class:list={['container', { narrow }]}>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: var(--section) 0;
+  }
+  .divider {
+    border-top: 1px solid rgb(255 255 255 / 0.05);
+  }
+  .flush-top {
+    padding-top: 0;
+  }
+  .narrow {
+    max-width: 1040px;
+  }
+</style>

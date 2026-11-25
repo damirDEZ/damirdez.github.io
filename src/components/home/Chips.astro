@@ -1,0 +1,41 @@
+---
+// Метки под работой (docs/design/system.md → «Метка»): обычная — серая рамка, ИИ — оранжевая.
+import type { Chip } from '../../data/types';
+
+interface Props {
+  items: Chip[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <ul class="chips">
+      {items.map((chip) => (
+        <li class:list={['chip', { ai: chip.ai }]}>{chip.label}</li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+  }
+  .chip {
+    font-size: var(--fs-chip);
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    border: 1px solid var(--line);
+    color: var(--text-2);
+  }
+  .ai {
+    border-color: rgb(255 138 61 / 0.45);
+    color: var(--accent);
+  }
+</style>

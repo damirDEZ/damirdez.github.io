@@ -12,6 +12,9 @@ shots/
 !.env.example
 .claude/settings.local.json
 
+# Скилл менеджера — только локально (репозиторий открытый)
+.claude/skills/
+
 # Системный мусор
 *.log
 Thumbs.db

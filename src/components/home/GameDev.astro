@@ -1,0 +1,98 @@
+---
+// Game dev (#game): большой кадр + маленькие, название, список «сделано / дальше» (system.md → «Список „сделано / дальше“»).
+import { gameSection } from '../../data/game';
+import Frame from './Frame.astro';
+import Section from './Section.astro';
+import SectionHead from './SectionHead.astro';
+
+const { project } = gameSection;
+---
+
+{
+  project && (
+    <Section id="game">
+      <SectionHead id="game" head={gameSection.head} />
+      <div class="game">
+        <div>
+          <Frame media={project.media} badge={project.badge} />
+          {project.shots.length > 0 && (
+            <ul class="shots">
+              {project.shots.map((shot) => (
+                <li>
+                  <Frame media={shot} variant="small" />
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div>
+          <h3>{project.title}</h3>
+          <p class="text">{project.text}</p>
+          {project.devlog.length > 0 && (
+            <ul class="devlog">
+              {project.devlog.map((entry) => (
+                <li class:list={{ next: entry.status === 'Next' }}>
+                  <span>{entry.status}</span> {entry.text}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </Section>
+  )
+}
+
+<style>
+  .game {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: clamp(24px, 4vw, 56px);
+    align-items: start;
+  }
+  .shots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-3);
+    margin-top: var(--s-3);
+    list-style: none;
+  }
+  h3 {
+    margin-bottom: 6px;
+    font-size: 28px;
+  }
+  .text {
+    margin-bottom: var(--s-3);
+    color: var(--text-2);
+  }
+  .devlog {
+    margin-top: var(--s-2);
+    list-style: none;
+  }
+  .devlog li {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: var(--s-3);
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: var(--fs-small);
+  }
+  .devlog span {
+    color: var(--text-2);
+  }
+  .devlog .next span {
+    color: var(--accent);
+  }
+
+  @media (max-width: 1020px) {
+    .game {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .devlog li {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
+  }
+</style>

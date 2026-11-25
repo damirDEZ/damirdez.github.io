@@ -1,0 +1,61 @@
+---
+// Selected work (#work): лучшие работы, первая — крупно (4:3 на две строки справа).
+import { selectedWork } from '../../data/selected-work';
+import Section from './Section.astro';
+import SectionHead from './SectionHead.astro';
+import WorkCard from './WorkCard.astro';
+---
+
+<Section id="work">
+  <SectionHead id="work" head={selectedWork.head} />
+  <ul class="featured">
+    {
+      selectedWork.items.map((item, index) => (
+        <li class:list={{ lead: index === 0 }}>
+          <WorkCard
+            title={item.title}
+            kind={item.kind}
+            description={item.description}
+            chips={item.chips}
+            media={item.media}
+            badge={item.badge}
+            play={item.video !== undefined}
+            duration={item.video?.duration}
+            featured={index === 0}
+            href={item.href}
+          />
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .featured {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--s-6);
+    list-style: none;
+  }
+  .lead {
+    grid-row: span 2;
+  }
+  @media (max-width: 1020px) {
+    .featured {
+      grid-template-columns: 1fr 1fr;
+    }
+    .lead {
+      grid-column: span 2;
+      grid-row: auto;
+    }
+  }
+  @media (max-width: 640px) {
+    .featured {
+      grid-template-columns: 1fr;
+    }
+    .lead {
+      grid-column: auto;
+    }
+  }
+</style>

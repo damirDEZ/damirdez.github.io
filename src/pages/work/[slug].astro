@@ -1,0 +1,38 @@
+---
+// Страница кейса /work/<slug>/ — по одобренному макету docs/design/case/case.html (Дамир 25.11).
+// Один шаблон для сайта, ролика и игры; данные — src/data/cases.ts; как устроено и как добавить кейс — docs/wiki/case.md.
+import type { GetStaticPaths } from 'astro';
+import CaseContact from '../../components/case/CaseContact.astro';
+import CaseGallery from '../../components/case/CaseGallery.astro';
+import CaseHero from '../../components/case/CaseHero.astro';
+import CaseStory from '../../components/case/CaseStory.astro';
+import NextCase from '../../components/case/NextCase.astro';
+import { caseLabels, type CasePage } from '../../data/cases';
+import Base from '../../layouts/Base.astro';
+import { nextCase, orderedCases } from '../../lib/cases';
+import { ogImagePath } from '../../lib/og';
+
+export const getStaticPaths = (() =>
+  orderedCases.map((item) => ({ params: { slug: item.slug }, props: { item } }))) satisfies GetStaticPaths;
+
+interface Props {
+  item: CasePage;
+}
+
+const { item } = Astro.props;
+const next = nextCase(item.slug);
+const gallery = item.gallery && item.gallery.shots.length > 0 ? item.gallery : undefined;
+---
+
+<Base
+  title={`${item.title}${caseLabels.titleSuffix}`}
+  description={item.lead}
+  image={ogImagePath(item.slug)}
+  type="article"
+>
+  <CaseHero item={item} />
+  <CaseStory item={item} />
+  {gallery && <CaseGallery gallery={gallery} />}
+  {next && <NextCase item={next} />}
+  <CaseContact kind={item.kind} />
+</Base>
